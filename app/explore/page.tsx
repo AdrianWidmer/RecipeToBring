@@ -10,12 +10,14 @@ import { Recipe } from "@/lib/supabase/types";
 import { ResizableNav } from "@/components/layout/ResizableNav";
 import { useAuth } from "@/lib/auth/context";
 import { supabase } from "@/lib/supabase/client";
+import { SearchFilter } from "@/components/explore/SearchFilter";
 
 export default function ExplorePage() {
   const { user } = useAuth();
   const [publicRecipes, setPublicRecipes] = useState<Recipe[]>([]);
   const [privateRecipes, setPrivateRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -48,6 +50,36 @@ export default function ExplorePage() {
 
     fetchRecipes();
   }, [user]);
+
+  // Filter recipes based on search query
+  const filterRecipes = (recipes: Recipe[]) => {
+    if (!searchQuery.trim()) return recipes;
+    
+    const query = searchQuery.toLowerCase();
+    
+    return recipes.filter((recipe) => {
+      // Search in title
+      if (recipe.title.toLowerCase().includes(query)) return true;
+      
+      // Search in description
+      if (recipe.description?.toLowerCase().includes(query)) return true;
+      
+      // Search in tags
+      if (recipe.tags?.some((tag) => tag.toLowerCase().includes(query))) return true;
+      
+      // Search in ingredients
+      if (recipe.ingredients) {
+        const ingredientsString = JSON.stringify(recipe.ingredients).toLowerCase();
+        if (ingredientsString.includes(query)) return true;
+      }
+      
+      return false;
+    });
+  };
+
+  const filteredPublicRecipes = filterRecipes(publicRecipes);
+  const filteredPrivateRecipes = filterRecipes(privateRecipes);
+  const totalResults = filteredPublicRecipes.length + filteredPrivateRecipes.length;
 
   const RecipeCard = ({ recipe, isPrivate }: { recipe: Recipe; isPrivate?: boolean }) => (
     <Link 
@@ -163,18 +195,28 @@ export default function ExplorePage() {
       <div className="relative pt-32 pb-20 px-4 bg-gradient-to-b from-primary/10 to-background">
         <div className="container max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
-            <span className="text-sm font-medium text-foreground">✨ Entdeck Rezäpt</span>
+            <span className="text-sm font-medium text-foreground">✨ Entdeck Rezept</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-              Rezäpt entdeckä
+              Rezept entdecke
             </span>
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {user ? "Dini privaten Rezäpt und Community-Favoriten" : "Entdeck Rezäpt vo üserer Community"}
+            {user ? "Dini privaten Rezept und Community-Favoriten" : "Entdeck Rezept vo üserer Community"}
           </p>
+        </div>
+      </div>
+
+      {/* Search Filter */}
+      <div className="container max-w-7xl mx-auto px-4 -mt-8 mb-8 relative z-10">
+        <div className="max-w-2xl mx-auto">
+          <SearchFilter 
+            onSearchChange={setSearchQuery}
+            totalResults={searchQuery ? totalResults : undefined}
+          />
         </div>
       </div>
 
@@ -183,24 +225,24 @@ export default function ExplorePage() {
         {loading ? (
           <div className="text-center py-20">
             <div className="text-4xl mb-4">⏳</div>
-            <p className="text-muted-foreground">Rezäpt werded glade...</p>
+            <p className="text-muted-foreground">Rezept werded glade...</p>
           </div>
         ) : (
           <>
             {/* Private Recipes Section - Only for logged in users */}
-            {user && privateRecipes.length > 0 && (
+            {user && filteredPrivateRecipes.length > 0 && (
               <div>
                 <div className="mb-8 flex items-center gap-3">
                   <Lock className="w-6 h-6 text-purple-400" />
                   <h2 className="text-3xl font-bold text-foreground">
-                    Mini privaten Rezäpt
+                    Mini privaten Rezept
                   </h2>
                   <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                    {privateRecipes.length}
+                    {filteredPrivateRecipes.length}
                   </Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {privateRecipes.map((recipe) => (
+                  {filteredPrivateRecipes.map((recipe) => (
                     <RecipeCard key={recipe.id} recipe={recipe} isPrivate />
                   ))}
                 </div>
@@ -208,19 +250,19 @@ export default function ExplorePage() {
             )}
 
             {/* Public Recipes Section */}
-            {publicRecipes.length > 0 && (
+            {filteredPublicRecipes.length > 0 && (
               <div>
                 <div className="mb-8 flex items-center gap-3">
                   <Globe className="w-6 h-6 text-green-400" />
                   <h2 className="text-3xl font-bold text-foreground">
-                    Öffentlichi Rezäpt
+                    Öffentlichi Rezept
                   </h2>
                   <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
-                    {publicRecipes.length}
+                    {filteredPublicRecipes.length}
                   </Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {publicRecipes.map((recipe) => (
+                  {filteredPublicRecipes.map((recipe) => (
                     <RecipeCard key={recipe.id} recipe={recipe} />
                   ))}
                 </div>
@@ -228,17 +270,27 @@ export default function ExplorePage() {
             )}
 
             {/* Empty State */}
-            {!loading && publicRecipes.length === 0 && privateRecipes.length === 0 && (
+            {!loading && filteredPublicRecipes.length === 0 && filteredPrivateRecipes.length === 0 && (
               <div className="text-center py-20">
-                <div className="text-6xl mb-6">🍳</div>
-                <h3 className="text-2xl font-bold text-muted-foreground mb-4">No Rezäpt no</h3>
-                <p className="text-muted-foreground mb-8">Sii de Erst, wo es Rezäpt teilt!</p>
-                <Link 
-                  href="/add"
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all"
-                >
-                  Füeg dis erschts Rezäpt hinzue
-                </Link>
+                {searchQuery ? (
+                  <>
+                    <div className="text-6xl mb-6">🔍</div>
+                    <h3 className="text-2xl font-bold text-muted-foreground mb-4">Kei Rezept gfunde</h3>
+                    <p className="text-muted-foreground mb-8">Probier en anderen Suechbegriff</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-6xl mb-6">🍳</div>
+                    <h3 className="text-2xl font-bold text-muted-foreground mb-4">No Rezept no</h3>
+                    <p className="text-muted-foreground mb-8">Sii de Erst, wo es Rezept teilt!</p>
+                    <Link 
+                      href="/add"
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all"
+                    >
+                      Füeg dis erschts Rezept hinzue
+                    </Link>
+                  </>
+                )}
               </div>
             )}
           </>

@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Error saving recipe:', error);
       return NextResponse.json(
-        { error: 'Rezäpt konnt nöd gspeicheret wärdä', details: error.message },
+        { error: 'Rezept konnt nöd gspeicheret wärdä', details: error.message },
         { status: 500 }
       );
     }

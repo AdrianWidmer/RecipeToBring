@@ -62,12 +62,12 @@ export default function AddRecipePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Rezäpt konnt nöd extrahiert wärdä");
+        throw new Error(data.error || "Rezept konnt nöd extrahiert wärdä");
       }
 
       setExtractedRecipe(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Rezäpt konnt nöd extrahiert wärdä");
+      setError(err instanceof Error ? err.message : "Rezept konnt nöd extrahiert wärdä");
     } finally {
       setLoading(false);
     }
@@ -94,12 +94,12 @@ export default function AddRecipePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Rezäpt konnt nöd gspeicheret wärdä");
+        throw new Error(data.error || "Rezept konnt nöd gspeicheret wärdä");
       }
 
       router.push(`/recipe/${data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Rezäpt konnt nöd gspeicheret wärdä");
+      setError(err instanceof Error ? err.message : "Rezept konnt nöd gspeicheret wärdä");
     } finally {
       setLoading(false);
     }
@@ -122,16 +122,16 @@ export default function AddRecipePage() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
                 <Sparkles className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium text-foreground">AI-gstützti Rezäpt-Extraktion</span>
+                <span className="text-sm font-medium text-foreground">AI-gstützti Rezept-Extraktion</span>
               </div>
               
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                  Füeg dis Rezäpt hinzue
+                  Füeg dis Rezept hinzue
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Füeg irgendän Rezäpt-URL ii und lass üsi AI d'Magie machä
+                Füeg irgendän Rezept-URL ii und lass üsi AI d'Magie machä
               </p>
             </div>
 
@@ -139,7 +139,7 @@ export default function AddRecipePage() {
             <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl p-8 md:p-12 shadow-2xl">
               <form onSubmit={handleExtract} className="space-y-6">
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-muted-foreground">Rezäpt URL</label>
+                  <label className="text-sm font-medium text-muted-foreground">Rezept URL</label>
                   <div className="relative">
                     <Input
                       type="url"
@@ -172,12 +172,12 @@ export default function AddRecipePage() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                      Extrahiere Rezäpt...
+                      Extrahiere Rezept...
                     </>
                   ) : (
                     <>
                       <Sparkles className="mr-3 h-5 w-5" />
-                      Rezäpt extrahiere
+                      Rezept extrahiere
                     </>
                   )}
                 </Button>

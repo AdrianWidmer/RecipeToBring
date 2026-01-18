@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     if (extractions && extractions.length >= 10) {
       return NextResponse.json(
-        { error: 'Rate-Limit überschritte. Du chasch bis zu 10 Rezäpt pro Tag extrahiere.' },
+        { error: 'Rate-Limit überschritte. Du chasch bis zu 10 Rezept pro Tag extrahiere.' },
         { status: 429 }
       );
     }
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error extracting recipe:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Rezäpt konnt nöd extrahiert wärdä' },
+      { error: error instanceof Error ? error.message : 'Rezept konnt nöd extrahiert wärdä' },
       { status: 500 }
     );
   }

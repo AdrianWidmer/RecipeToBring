@@ -31,7 +31,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
       <div className="bg-green-500/10 backdrop-blur-sm border border-green-500/20 rounded-2xl p-6 flex items-center gap-4">
         <CheckCircle2 className="h-8 w-8 text-green-400 flex-shrink-0" />
         <div>
-          <h3 className="text-lg font-semibold text-green-300">Rezäpt erfolgriich extrahiert!</h3>
+          <h3 className="text-lg font-semibold text-green-300">Rezept erfolgriich extrahiert!</h3>
           <p className="text-muted-foreground">Prüef d'Details und speicher's i dinere Sammlig</p>
         </div>
       </div>
@@ -168,11 +168,11 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
           {/* Visibility Toggle */}
           <div className="flex items-center justify-between p-6 bg-card backdrop-blur-xl border border-border rounded-2xl">
             <div>
-              <h4 className="font-semibold mb-1 text-lg text-foreground">Rezäpt-Sichtbarkeit</h4>
+              <h4 className="font-semibold mb-1 text-lg text-foreground">Rezept-Sichtbarkeit</h4>
               <p className="text-muted-foreground">
                 {isPublic 
-                  ? "Alli chönd das Rezäpt uf dä Entdeckä-Siite gseh" 
-                  : "Nur du chasch das Rezäpt gseh"}
+                  ? "Alli chönd das Rezept uf dä Entdeck-Siite gseh" 
+                  : "Nur du chasch das Rezept gseh"}
               </p>
             </div>
             <Button
@@ -211,7 +211,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
               ) : (
                 <>
                   <CheckCircle2 className="mr-3 h-5 w-5" />
-                  Rezäpt speichere
+                  Rezept speichere
                 </>
               )}
             </Button>

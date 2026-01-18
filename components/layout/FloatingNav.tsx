@@ -21,12 +21,12 @@ export function FloatingNav() {
       href: '/',
     },
     {
-      title: 'Rezäpt hinzuefüegä',
+      title: 'Rezept hinzufüege',
       icon: <Plus className="h-full w-full" />,
       href: user ? '/add' : '/login?redirect=/add',
     },
     {
-      title: 'Entdeckä',
+      title: 'Entdecke',
       icon: <Compass className="h-full w-full" />,
       href: '/explore',
     },

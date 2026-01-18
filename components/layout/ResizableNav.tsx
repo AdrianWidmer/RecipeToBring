@@ -35,11 +35,11 @@ export function ResizableNav() {
       link: "/",
     },
     {
-      name: "Rezäpt hinzuefüegä",
+      name: "Rezept hinzufüege",
       link: user ? "/add" : "/login?redirect=/add",
     },
     {
-      name: "Entdeckä",
+      name: "Entdecke",
       link: "/explore",
     },
   ];
@@ -71,12 +71,12 @@ export function ResizableNav() {
               as="button"
             >
               <LogOut className="h-4 w-4 inline mr-2" />
-              Abmäldä
+              Abmelde
             </NavbarButton>
           ) : (
             <NavbarButton href="/login" variant="gradient">
               <User className="h-4 w-4 inline mr-2" />
-              Aamäldä
+              Ahmelde
             </NavbarButton>
           )}
         </div>
@@ -132,7 +132,7 @@ export function ResizableNav() {
               )}
             >
               <LogOut className="h-4 w-4" />
-              Abmäldä
+              Abmelde
             </button>
           ) : (
             <Link
@@ -146,7 +146,7 @@ export function ResizableNav() {
               )}
             >
               <User className="h-4 w-4" />
-              Aamäldä
+              Ahmelde
             </Link>
           )}
         </MobileNavMenu>

@@ -27,7 +27,7 @@ export default function HomePage() {
 
   // Calculate border radius and padding based on scroll
   const borderRadius = Math.min(scrollY / 3, 48);
-  const contentPadding = Math.min(scrollY / 10, 32);
+  const contentPadding = Math.min(scrollY / 10, 16);
   const scale = Math.max(1 - scrollY / 5000, 0.95);
 
   const features = [
@@ -110,11 +110,10 @@ export default function HomePage() {
               className="mb-12"
             >
               <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[1.1] mb-8">
-                <span className="block text-foreground mb-4">Vom Rezäpt</span>
+                <span className="block text-foreground mb-4">Vom Rezept</span>
                 <span className="block bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent mb-4">
-                  Zum Iikauf
+                  zur Ihkaufsliste
                 </span>
-                <span className="block text-foreground">I Sekunde</span>
               </h1>
             </motion.div>
 
@@ -125,9 +124,8 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed font-light px-4"
             >
-              Rezäpt vo jeder Website oder Video extrahiere.{" "}
-              <span className="text-primary font-medium">AI-gstüützt</span> Zuetate-Extraktionszieh.{" "}
-              <span className="text-primary font-medium">Sofort</span> Iikaufslischte.
+              Rezept vo jeder Website oder Video extrahiere.{" "}
+              <span className="text-primary font-medium">AI-gstützt</span> Zuetate extrahiere.{" "}
             </motion.p>
 
             {/* CTA Buttons - More Spacing */}
@@ -171,29 +169,6 @@ export default function HomePage() {
                   </span>
                 </motion.button>
               </Link>
-            </motion.div>
-
-            {/* Stats - More Spacing */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.8 }}
-              className="grid grid-cols-3 gap-12 max-w-3xl mx-auto"
-            >
-              {[
-                { value: "10K+", label: "Rezäpt" },
-                { value: "99.9%", label: "Genauigkeit" },
-                { value: "< 10s", label: "Extraktionszit" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-br from-primary to-blue-500 bg-clip-text text-transparent mb-3">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground font-medium">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
             </motion.div>
           </div>
 

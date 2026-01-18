@@ -39,7 +39,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!recipeId) {
       return NextResponse.json(
-        { error: "Rezäpt-ID wird bruucht" },
+        { error: "Rezept-ID wird bruucht" },
         { status: 400 }
       );
     }
@@ -53,7 +53,7 @@ export async function DELETE(request: NextRequest) {
 
     if (fetchError || !recipe) {
       return NextResponse.json(
-        { error: "Rezäpt nöd gfunde" },
+        { error: "Rezept nöd gfunde" },
         { status: 404 }
       );
     }
@@ -61,7 +61,7 @@ export async function DELETE(request: NextRequest) {
     // Verify the user owns this recipe
     if (recipe.created_by !== user.id) {
       return NextResponse.json(
-        { error: "Du chasch nur dini eigene Rezäpt lösche" },
+        { error: "Du chasch nur dini eigene Rezept lösche" },
         { status: 403 }
       );
     }
@@ -75,13 +75,13 @@ export async function DELETE(request: NextRequest) {
     if (deleteError) {
       console.error("Error deleting recipe:", deleteError);
       return NextResponse.json(
-        { error: "Rezäpt konnt nöd glöscht wärdä" },
+        { error: "Rezept konnt nöd glöscht wärdä" },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { message: "Rezäpt erfolgriich glöscht" },
+      { message: "Rezept erfolgriich glöscht" },
       { status: 200 }
     );
   } catch (error) {
