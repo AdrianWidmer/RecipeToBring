@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, ArrowLeft } from "lucide-react";
 import { formatTime } from "@/lib/utils";
+import { Recipe } from "@/lib/supabase/types";
 
 export default async function ExplorePage() {
   const { data: recipes } = await supabaseAdmin
@@ -12,7 +13,7 @@ export default async function ExplorePage() {
     .select("*")
     .eq("is_public", true)
     .order("created_at", { ascending: false })
-    .limit(50);
+    .limit(50) as { data: Recipe[] | null };
 
   return (
     <div className="min-h-screen bg-background">

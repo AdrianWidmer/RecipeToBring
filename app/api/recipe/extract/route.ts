@@ -35,9 +35,14 @@ export async function POST(request: NextRequest) {
     const recipe = await parseRecipeFromUrl(url);
 
     // Record extraction for rate limiting
-    await supabaseAdmin
+    const { error: insertError } = await supabaseAdmin
       .from('recipe_extractions')
+      // @ts-ignore - Supabase types need proper setup
       .insert({ user_id: userId });
+    
+    if (insertError) {
+      console.error('Error recording extraction:', insertError);
+    }
 
     return NextResponse.json(recipe);
   } catch (error) {

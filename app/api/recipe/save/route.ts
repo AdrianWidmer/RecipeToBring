@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('recipes')
+      // @ts-ignore - Supabase types need proper setup
       .insert(recipeData)
       .select()
       .single();

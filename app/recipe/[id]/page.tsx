@@ -6,15 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Users, ChefHat, ArrowLeft, Heart } from "lucide-react";
 import { getDifficultyColor, formatTime } from "@/lib/utils";
-import { Ingredient, Instruction } from "@/lib/supabase/types";
+import { Ingredient, Instruction, Recipe } from "@/lib/supabase/types";
 import { BringImportButton } from "@/components/recipe/BringImportButton";
 
-export default async function RecipePage({ params }: { params: { id: string } }) {
-  const { data: recipe, error } = await supabaseAdmin
+export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { data, error } = await supabaseAdmin
     .from("recipes")
     .select("*")
-    .eq("id", params.id)
-    .single();
+    .eq("id", id)
+    .single() as { data: Recipe | null; error: any };
+    
+  const recipe = data;
 
   if (error || !recipe) {
     notFound();
@@ -23,6 +26,7 @@ export default async function RecipePage({ params }: { params: { id: string } })
   // Increment view count
   await supabaseAdmin
     .from("recipes")
+    // @ts-ignore - Supabase types need proper setup
     .update({ view_count: recipe.view_count + 1 })
     .eq("id", recipe.id);
 
