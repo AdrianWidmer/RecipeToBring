@@ -1,176 +1,303 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Button as MovingBorder } from "@/components/ui/moving-border";
-import { BackgroundBeams } from "@/components/aceternity/background-beams";
-import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { FloatingNav } from "@/components/layout/FloatingNav";
-import { ChefHat, Sparkles, Smartphone, Globe, Video, Zap } from "lucide-react";
-import { motion } from "framer-motion";
+import { BackgroundBeams } from "@/components/aceternity/background-beams";
+import { ChefHat, Sparkles, Smartphone, Globe, Video, Zap, ArrowDown, Play } from "lucide-react";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function HomePage() {
+  const [scrollY, setScrollY] = useState(0);
+  const { scrollYProgress } = useScroll();
+  
+  // Smooth spring animation for scroll effects
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calculate border radius and padding based on scroll
+  const borderRadius = Math.min(scrollY / 3, 48);
+  const contentPadding = Math.min(scrollY / 10, 32);
+  const scale = Math.max(1 - scrollY / 5000, 0.95);
+
   const features = [
     {
-      title: "AI-Powered Extraction",
-      description: "Our AI understands recipes from any website and extracts ingredients perfectly.",
-      icon: <Sparkles className="h-10 w-10 text-purple-500" />,
-      className: "md:col-span-2",
+      title: "AI-Powered Magic",
+      description: "GPT-4 instantly extracts every ingredient and step from any recipe URL",
+      icon: <Sparkles className="h-8 w-8" />,
+      gradient: "from-violet-500 to-purple-500",
     },
     {
-      title: "YouTube & TikTok",
-      description: "Extract recipes directly from cooking videos with AI transcript analysis.",
-      icon: <Video className="h-10 w-10 text-pink-500" />,
-      className: "md:col-span-1",
+      title: "Video Intelligence",
+      description: "YouTube & TikTok cooking videos analyzed with AI transcript processing",
+      icon: <Video className="h-8 w-8" />,
+      gradient: "from-pink-500 to-rose-500",
     },
     {
       title: "Bring! Integration",
-      description: "One-click export to your Bring! shopping list. Shop smarter, not harder.",
-      icon: <Smartphone className="h-10 w-10 text-indigo-500" />,
-      className: "md:col-span-1",
+      description: "One-click export to your shopping list. Cook smarter, not harder",
+      icon: <Smartphone className="h-8 w-8" />,
+      gradient: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Any Website",
-      description: "Works with AllRecipes, FoodNetwork, BBC Good Food, and thousands more.",
-      icon: <Globe className="h-10 w-10 text-blue-500" />,
-      className: "md:col-span-2",
+      title: "Universal Compatibility",
+      description: "Works with thousands of recipe sites. Just paste the URL and go",
+      icon: <Globe className="h-8 w-8" />,
+      gradient: "from-emerald-500 to-teal-500",
     },
   ];
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <div className="relative min-h-screen bg-background">
       <FloatingNav />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4">
+      {/* BackgroundBeams for entire page */}
+      <div className="fixed inset-0 z-0 opacity-30">
         <BackgroundBeams />
-        
-        <HeroHighlight className="relative z-10 max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-8"
-          >
-            <div className="inline-flex items-center gap-2 bg-card/50 backdrop-blur-sm border border-border rounded-full px-6 py-3 mb-6">
-              <Zap className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium text-foreground">Powered by GPT-4</span>
-            </div>
+      </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground">
-              From Recipe to{" "}
-              <Highlight className="text-foreground">
-                Shopping List
-              </Highlight>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Extract recipes from any website, YouTube, or TikTok. 
-              AI-powered ingredient extraction in seconds.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-              <Link href="/add">
-                <MovingBorder
-                  borderRadius="1.75rem"
-                  className="bg-background text-foreground border-primary px-8 py-4 text-lg flex items-center"
-                >
-                  <ChefHat className="mr-2 h-6 w-6" />
-                  Start Extracting
-                </MovingBorder>
-              </Link>
-              <Link href="/explore">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-border hover:border-primary text-foreground text-lg px-8 py-4 h-auto rounded-3xl"
-                >
-                  Browse Recipes
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        </HeroHighlight>
-
-        {/* Scroll Indicator */}
+      {/* HERO SECTION - TRUE Full Screen */}
+      <section 
+        className="relative flex items-center justify-center overflow-hidden"
+        style={{
+          height: '100vh',
+          padding: `${contentPadding}px`,
+        }}
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="relative z-10 w-full h-full bg-gradient-to-br from-background/50 via-background/50 to-primary/5 flex items-center justify-center"
+          style={{
+            borderRadius: `${borderRadius}px`,
+            scale,
+          }}
         >
-          <div className="w-6 h-12 border-2 border-border rounded-full flex items-start justify-center p-2">
+          {/* Hero Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-12 lg:px-16 text-center py-16">
+            {/* Floating Badge */}
             <motion.div
-              animate={{ y: [0, 20, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-1.5 h-3 bg-muted-foreground rounded-full"
-            />
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-3 bg-primary/10 backdrop-blur-xl border border-primary/20 rounded-full px-8 py-4 mb-12 shadow-lg shadow-primary/5"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              >
+                <Zap className="w-5 h-5 text-primary" />
+              </motion.div>
+              <span className="text-sm font-semibold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                Powered by a lot of guggus
+              </span>
+            </motion.div>
+
+            {/* Main Heading - More Spacing */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-12"
+            >
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[1.1] mb-8">
+                <span className="block text-foreground mb-4">From Recipe</span>
+                <span className="block bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent mb-4">
+                  To Shopping
+                </span>
+                <span className="block text-foreground">In Seconds</span>
+              </h1>
+            </motion.div>
+
+            {/* Subtitle - More Spacing */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed font-light px-4"
+            >
+              Extract recipes from any website or video.{" "}
+              <span className="text-primary font-medium">AI-powered</span> ingredient extraction.{" "}
+              <span className="text-primary font-medium">Instant</span> shopping lists.
+            </motion.p>
+
+            {/* CTA Buttons - More Spacing */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20"
+            >
+              <Link href="/add">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group relative px-12 py-6 rounded-2xl text-lg font-bold overflow-hidden"
+                >
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 animate-gradient-x" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity" />
+                  <span className="relative flex items-center gap-3 text-white">
+                    <ChefHat className="w-6 h-6" />
+                    Start Extracting
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
+                  </span>
+                </motion.button>
+              </Link>
+
+              <Link href="/explore">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group px-12 py-6 rounded-2xl text-lg font-bold border-2 border-border hover:border-primary bg-card/50 backdrop-blur-sm hover:bg-card transition-all"
+                >
+                  <span className="flex items-center gap-3 text-foreground group-hover:text-primary transition-colors">
+                    <Play className="w-6 h-6" />
+                    See Examples
+                  </span>
+                </motion.button>
+              </Link>
+            </motion.div>
+
+            {/* Stats - More Spacing */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="grid grid-cols-3 gap-12 max-w-3xl mx-auto"
+            >
+              {[
+                { value: "10K+", label: "Recipes" },
+                { value: "99.9%", label: "Accuracy" },
+                { value: "< 10s", label: "Extract Time" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-br from-primary to-blue-500 bg-clip-text text-transparent mb-3">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-muted-foreground font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
           </div>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: scrollY < 100 ? 1 : 0 }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          >
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="flex flex-col items-center gap-2"
+            >
+              <span className="text-sm text-muted-foreground font-medium">Scroll to explore</span>
+              <ArrowDown className="w-5 h-5 text-primary" />
+            </motion.div>
+          </motion.div>
         </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section className="relative py-32 px-4">
+      {/* FEATURES SECTION - More Whitespace */}
+      <section className="relative py-32 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
+          {/* Section Header - More Spacing */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-24"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-              Everything You Need
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8">
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                Everything You Need
+              </span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful features designed for modern home cooks
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light">
+              Powerful AI features designed for the modern home cook
             </p>
           </motion.div>
 
-          <BentoGrid className="max-w-6xl mx-auto">
+          {/* Features Grid - More Spacing */}
+          <div className="grid md:grid-cols-2 gap-8">
             {features.map((feature, i) => (
-              <BentoGridItem
+              <motion.div
                 key={i}
-                title={feature.title}
-                description={feature.description}
-                header={
-                  <div className="flex items-center justify-center h-32">
-                    {feature.icon}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="group relative"
+              >
+                <div className="relative h-full p-10 md:p-12 rounded-3xl bg-card/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300">
+                  {/* Glow effect on hover */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-300`} />
+                  
+                  {/* Icon - More Spacing */}
+                  <div className={`inline-flex p-5 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-8`}>
+                    <div className="text-white">
+                      {feature.icon}
+                    </div>
                   </div>
-                }
-                className={feature.className}
-              />
+
+                  {/* Content - More Spacing */}
+                  <h3 className="text-2xl md:text-3xl font-bold mb-5 text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+
+                  {/* Arrow indicator */}
+                  <motion.div
+                    className="absolute bottom-10 right-10 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <span className="text-primary text-xl">→</span>
+                  </motion.div>
+                </div>
+              </motion.div>
             ))}
-          </BentoGrid>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-32 px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center space-y-8 bg-gradient-to-r from-primary/10 via-blue-500/10 to-cyan-500/10 border border-border rounded-3xl p-12 md:p-20"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-            Ready to Cook Smarter?
-          </h2>
-          <p className="text-xl text-muted-foreground">
-            Join thousands of home cooks who've simplified their meal prep
-          </p>
-          <Link href="/login?redirect=/add">
-            <MovingBorder
-              borderRadius="1.75rem"
-              className="bg-background text-foreground border-primary px-10 py-5 text-xl"
-            >
-              Get Started Free
-            </MovingBorder>
-          </Link>
-        </motion.div>
-      </section>
-    </main>
+      {/* Add extra padding at bottom for floating nav */}
+      <div className="h-32" />
+
+      <style jsx global>{`
+        @keyframes gradient-x {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease infinite;
+        }
+      `}</style>
+    </div>
   );
 }

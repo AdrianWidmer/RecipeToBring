@@ -14,7 +14,7 @@ export function FloatingNav() {
     router.push('/');
   };
 
-  const navItems = [
+  const navItems: Array<{ title: string; icon: React.ReactNode; href: string; onClick?: () => void }> = [
     {
       title: 'Home',
       icon: <Home className="h-full w-full" />,
@@ -36,7 +36,8 @@ export function FloatingNav() {
     navItems.push({
       title: 'Sign Out',
       icon: <LogOut className="h-full w-full" />,
-      href: '#signout',
+      href: '#',
+      onClick: handleSignOut,
     });
   } else {
     navItems.push({

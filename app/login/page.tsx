@@ -171,7 +171,6 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-muted-foreground text-sm">
-              Free forever • No credit card required
             </p>
           </div>
         </motion.div>
