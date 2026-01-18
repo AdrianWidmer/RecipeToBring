@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Link as LinkIcon, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Loader2, Link as LinkIcon, Sparkles, CheckCircle2 } from "lucide-react";
 import { ParsedRecipe } from "@/lib/recipe-parser";
 import { RecipePreview } from "@/components/forms/RecipePreview";
 import { useAuth } from "@/lib/auth/context";
-import { Header } from "@/components/layout/Header";
+import { FloatingNav } from "@/components/layout/FloatingNav";
+import { BackgroundBeams } from "@/components/aceternity/background-beams";
+import { motion } from "framer-motion";
 
 export default function AddRecipePage() {
   const router = useRouter();
@@ -20,23 +20,20 @@ export default function AddRecipePage() {
   const [error, setError] = useState("");
   const [extractedRecipe, setExtractedRecipe] = useState<ParsedRecipe | null>(null);
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login?redirect=/add');
     }
   }, [user, authLoading, router]);
 
-  // Show loading while checking auth
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
 
-  // Don't render if not authenticated
   if (!user) {
     return null;
   }
@@ -100,7 +97,6 @@ export default function AddRecipePage() {
         throw new Error(data.error || "Failed to save recipe");
       }
 
-      // Redirect to recipe page
       window.location.href = `/recipe/${data.id}`;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save recipe");
@@ -110,73 +106,132 @@ export default function AddRecipePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <div className="min-h-screen bg-background relative">
+      <FloatingNav />
+      <BackgroundBeams className="opacity-40" />
 
-      <div className="container max-w-4xl py-8 px-4">
+      <div className="relative z-10 container max-w-5xl py-20 px-4 min-h-screen flex items-center">
         {!extractedRecipe ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Extract Recipe from URL</CardTitle>
-              <CardDescription>
-                Paste a link to any recipe website, YouTube video, or TikTok. Our AI will extract the ingredients and instructions.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleExtract} className="space-y-4">
-                <div className="space-y-2">
-                  <Input
-                    type="url"
-                    placeholder="https://www.example.com/recipe or https://youtube.com/..."
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    disabled={loading}
-                    className="text-base"
-                  />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full"
+          >
+            {/* Hero Text */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-foreground">AI-Powered Recipe Extraction</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                  Add Your Recipe
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Paste any recipe URL and let our AI do the magic
+              </p>
+            </div>
+
+            {/* Input Card */}
+            <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl p-8 md:p-12 shadow-2xl">
+              <form onSubmit={handleExtract} className="space-y-6">
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-muted-foreground">Recipe URL</label>
+                  <div className="relative">
+                    <Input
+                      type="url"
+                      placeholder="https://www.example.com/recipe or https://youtube.com/..."
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      disabled={loading}
+                      className="text-base h-14 bg-background/50 border-border focus:border-primary rounded-xl pl-12 text-foreground placeholder:text-muted-foreground"
+                    />
+                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  </div>
                   {error && (
-                    <p className="text-sm text-destructive">{error}</p>
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-sm text-red-400 flex items-center gap-2"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-red-400" />
+                      {error}
+                    </motion.p>
                   )}
                 </div>
 
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full"
+                  className="w-full h-14 text-lg bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 rounded-xl font-semibold"
                   size="lg"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-3 h-5 w-5 animate-spin" />
                       Extracting Recipe...
                     </>
                   ) : (
                     <>
-                      <LinkIcon className="mr-2 h-4 w-4" />
+                      <Sparkles className="mr-3 h-5 w-5" />
                       Extract Recipe
                     </>
                   )}
                 </Button>
               </form>
 
-              <div className="mt-6 space-y-2">
-                <p className="text-sm font-medium">Supported Sources:</p>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Recipe websites (AllRecipes, FoodNetwork, BBC Good Food, etc.)</li>
-                  <li>• YouTube cooking videos</li>
-                  <li>• TikTok recipe videos</li>
-                  <li>• Any website with recipe content</li>
-                </ul>
+              {/* Supported Sources */}
+              <div className="mt-10 pt-8 border-t border-border">
+                <p className="text-sm font-medium text-muted-foreground mb-4">Supported Sources:</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { name: 'Websites', icon: '🌐' },
+                    { name: 'YouTube', icon: '📺' },
+                    { name: 'TikTok', icon: '🎵' },
+                    { name: 'Blogs', icon: '📝' },
+                  ].map((source) => (
+                    <div
+                      key={source.name}
+                      className="flex items-center gap-2 bg-card/50 rounded-lg px-4 py-3 border border-border"
+                    >
+                      <span className="text-2xl">{source.icon}</span>
+                      <span className="text-sm text-muted-foreground">{source.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Features List */}
+              <div className="mt-8 grid md:grid-cols-3 gap-4">
+                {[
+                  'AI-powered extraction',
+                  'Instant ingredient list',
+                  'Step-by-step instructions',
+                ].map((feature) => (
+                  <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    {feature}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         ) : (
-          <RecipePreview
-            recipe={extractedRecipe}
-            onSave={handleSave}
-            onCancel={() => setExtractedRecipe(null)}
-            loading={loading}
-            error={error}
-          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full"
+          >
+            <RecipePreview
+              recipe={extractedRecipe}
+              onSave={handleSave}
+              onCancel={() => setExtractedRecipe(null)}
+              loading={loading}
+              error={error}
+            />
+          </motion.div>
         )}
       </div>
     </div>

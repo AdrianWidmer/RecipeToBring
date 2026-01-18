@@ -1,150 +1,180 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/auth/context';
+import { BackgroundBeams } from '@/components/aceternity/background-beams';
+import { FloatingNav } from '@/components/layout/FloatingNav';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user, loading } = useAuth();
-  const [redirectTo, setRedirectTo] = useState<string>('/');
 
   useEffect(() => {
-    // Get redirect URL from query params
-    const redirect = searchParams?.get('redirect');
-    if (redirect) {
-      setRedirectTo(redirect);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    // Redirect if already logged in
     if (user && !loading) {
-      router.push(redirectTo);
+      // Get redirect from URL manually
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect') || '/';
+      router.push(redirect);
     }
-  }, [user, loading, router, redirectTo]);
+  }, [user, loading, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black p-4">
-      <div className="w-full max-w-md">
-        {/* Logo/Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">RecipeToBring</h1>
-          <p className="text-gray-400">Sign in to save your recipes</p>
-        </div>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <FloatingNav />
+      <BackgroundBeams className="opacity-40" />
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-foreground">Welcome Back</span>
+            </div>
+            
+            <h1 className="text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                Sign In
+              </span>
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Continue your culinary journey
+            </p>
+          </div>
 
-        {/* Auth UI */}
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#8b5cf6',
-                    brandAccent: '#7c3aed',
-                    brandButtonText: 'white',
-                    defaultButtonBackground: '#1f1f1f',
-                    defaultButtonBackgroundHover: '#2f2f2f',
-                    defaultButtonBorder: '#333',
-                    defaultButtonText: 'white',
-                    dividerBackground: '#333',
-                    inputBackground: '#1f1f1f',
-                    inputBorder: '#333',
-                    inputBorderHover: '#555',
-                    inputBorderFocus: '#8b5cf6',
-                    inputText: 'white',
-                    inputPlaceholder: '#888',
+          {/* Auth Card */}
+          <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl p-8 shadow-2xl">
+            <Auth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#a855f7',
+                      brandAccent: '#9333ea',
+                      brandButtonText: 'white',
+                      defaultButtonBackground: 'rgba(255, 255, 255, 0.05)',
+                      defaultButtonBackgroundHover: 'rgba(255, 255, 255, 0.1)',
+                      defaultButtonBorder: 'rgba(255, 255, 255, 0.1)',
+                      defaultButtonText: 'white',
+                      dividerBackground: 'rgba(255, 255, 255, 0.1)',
+                      inputBackground: 'rgba(0, 0, 0, 0.3)',
+                      inputBorder: 'rgba(255, 255, 255, 0.2)',
+                      inputBorderHover: 'rgba(168, 85, 247, 0.5)',
+                      inputBorderFocus: 'rgba(168, 85, 247, 0.8)',
+                      inputText: 'white',
+                      inputPlaceholder: 'rgba(255, 255, 255, 0.4)',
+                    },
+                    space: {
+                      spaceSmall: '6px',
+                      spaceMedium: '12px',
+                      spaceLarge: '20px',
+                    },
+                    fontSizes: {
+                      baseBodySize: '15px',
+                      baseInputSize: '16px',
+                      baseLabelSize: '15px',
+                      baseButtonSize: '16px',
+                    },
+                    borderWidths: {
+                      buttonBorderWidth: '1px',
+                      inputBorderWidth: '1px',
+                    },
+                    radii: {
+                      borderRadiusButton: '12px',
+                      buttonBorderRadius: '12px',
+                      inputBorderRadius: '12px',
+                    },
                   },
-                  space: {
-                    spaceSmall: '4px',
-                    spaceMedium: '8px',
-                    spaceLarge: '16px',
+                },
+                style: {
+                  button: {
+                    fontWeight: '600',
+                    padding: '12px 24px',
                   },
-                  fontSizes: {
-                    baseBodySize: '14px',
-                    baseInputSize: '16px',
-                    baseLabelSize: '14px',
-                    baseButtonSize: '16px',
+                  anchor: {
+                    color: '#a855f7',
+                    textDecoration: 'none',
+                    fontWeight: '500',
                   },
-                  borderWidths: {
-                    buttonBorderWidth: '1px',
-                    inputBorderWidth: '1px',
+                  message: {
+                    color: '#ef4444',
+                    fontSize: '14px',
                   },
-                  radii: {
-                    borderRadiusButton: '8px',
-                    buttonBorderRadius: '8px',
-                    inputBorderRadius: '8px',
+                  input: {
+                    padding: '12px 16px',
+                  },
+                  label: {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontWeight: '500',
+                    marginBottom: '8px',
                   },
                 },
-              },
-              style: {
-                button: {
-                  fontWeight: '600',
+              }}
+              providers={['google']}
+              redirectTo={`${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`}
+              onlyThirdPartyProviders={false}
+              magicLink={true}
+              view="magic_link"
+              showLinks={true}
+              localization={{
+                variables: {
+                  magic_link: {
+                    email_input_label: 'Email address',
+                    email_input_placeholder: 'your@email.com',
+                    button_label: 'Send Magic Link',
+                    loading_button_label: 'Sending...',
+                    link_text: 'Send a magic link',
+                    confirmation_text: 'Check your email for the magic link',
+                  },
+                  sign_in: {
+                    email_label: 'Email',
+                    password_label: 'Password',
+                    button_label: 'Sign in',
+                    loading_button_label: 'Signing in...',
+                    social_provider_text: 'Continue with {{provider}}',
+                    link_text: 'Already have an account?',
+                  },
+                  sign_up: {
+                    email_label: 'Email',
+                    password_label: 'Password',
+                    button_label: 'Sign up',
+                    loading_button_label: 'Signing up...',
+                    social_provider_text: 'Continue with {{provider}}',
+                    link_text: "Don't have an account?",
+                  },
                 },
-                anchor: {
-                  color: '#8b5cf6',
-                  textDecoration: 'none',
-                },
-                message: {
-                  color: '#ef4444',
-                },
-              },
-            }}
-            providers={['google']}
-            redirectTo={`${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`}
-            onlyThirdPartyProviders={false}
-            magicLink={true}
-            view="magic_link"
-            showLinks={true}
-            localization={{
-              variables: {
-                magic_link: {
-                  email_input_label: 'Email address',
-                  email_input_placeholder: 'Your email address',
-                  button_label: 'Send magic link',
-                  loading_button_label: 'Sending magic link...',
-                  link_text: 'Send a magic link email',
-                  confirmation_text: 'Check your email for the magic link',
-                },
-                sign_in: {
-                  email_label: 'Email address',
-                  password_label: 'Password',
-                  button_label: 'Sign in',
-                  loading_button_label: 'Signing in...',
-                  social_provider_text: 'Sign in with {{provider}}',
-                  link_text: 'Already have an account? Sign in',
-                },
-                sign_up: {
-                  email_label: 'Email address',
-                  password_label: 'Create a password',
-                  button_label: 'Sign up',
-                  loading_button_label: 'Signing up...',
-                  social_provider_text: 'Sign in with {{provider}}',
-                  link_text: "Don't have an account? Sign up",
-                },
-              },
-            }}
-          />
-        </div>
+              }}
+            />
+          </div>
 
-        {/* Footer */}
-        <div className="mt-6 text-center text-sm text-gray-400">
-          <p>No credit card required. Free forever.</p>
-        </div>
+          {/* Footer */}
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground text-sm">
+              Free forever • No credit card required
+            </p>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
