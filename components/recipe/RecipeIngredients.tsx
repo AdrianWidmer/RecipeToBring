@@ -8,13 +8,13 @@ import { BringImportButton } from "./BringImportButton";
 interface RecipeIngredientsProps {
   initialServings: number;
   initialIngredients: Ingredient[];
-  recipeUrl: string;
+  recipeTitle: string;
 }
 
 export function RecipeIngredients({
   initialServings,
   initialIngredients,
-  recipeUrl,
+  recipeTitle,
 }: RecipeIngredientsProps) {
   const [ingredients, setIngredients] = useState(initialIngredients);
   const [servings, setServings] = useState(initialServings);
@@ -76,7 +76,10 @@ export function RecipeIngredients({
 
             {/* Bring Import Button */}
             <div className="mt-8 pt-6 border-t border-border">
-              <BringImportButton recipeUrl={recipeUrl} />
+              <BringImportButton 
+                ingredients={ingredients} 
+                recipeTitle={recipeTitle}
+              />
             </div>
           </div>
         </div>

@@ -113,7 +113,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <RecipeIngredients
             initialServings={recipe.servings || 0}
             initialIngredients={ingredients}
-            recipeUrl={recipe.source_url}
+            recipeTitle={recipe.title}
           />
 
           {/* Instructions */}
