@@ -3,9 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ArrowLeft } from "lucide-react";
+import { Clock, Users } from "lucide-react";
 import { formatTime } from "@/lib/utils";
 import { Recipe } from "@/lib/supabase/types";
+import { Header } from "@/components/layout/Header";
 
 export default async function ExplorePage() {
   const { data: recipes } = await supabaseAdmin
@@ -17,16 +18,7 @@ export default async function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
-          <h1 className="text-xl font-bold ml-4">Explore Recipes</h1>
-        </div>
-      </header>
+      <Header />
 
       <div className="container py-8 px-4">
         {recipes && recipes.length > 0 ? (

@@ -2,10 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { ChefHat, Sparkles, Smartphone } from "lucide-react";
+import { Header } from "@/components/layout/Header";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen">
+      <Header />
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
         <BackgroundBeams />
@@ -30,7 +33,7 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Link href="/add">
+            <Link href="/login?redirect=/add">
               <Button size="lg" className="w-full sm:w-auto text-base">
                 <ChefHat className="mr-2 h-5 w-5" />
                 Add Your First Recipe

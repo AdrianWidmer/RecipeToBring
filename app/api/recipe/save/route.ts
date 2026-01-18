@@ -1,29 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/server';
 import { RecipeInsert } from '@/lib/supabase/types';
+import { createClient } from '@/lib/supabase/server-client';
 
 export async function POST(request: NextRequest) {
   try {
-    const recipeData: RecipeInsert = await request.json();
+    const supabase = await createClient();
 
-    if (!recipeData.created_by) {
+    // Get authenticated user
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
       return NextResponse.json(
-        { error: 'User ID required' },
-        { status: 400 }
+        { error: 'Unauthorized - Please sign in' },
+        { status: 401 }
       );
     }
 
-    const { data, error } = await supabaseAdmin
+    const recipeData: Omit<RecipeInsert, 'created_by'> = await request.json();
+
+    // Insert recipe with authenticated user ID
+    const { data, error } = await supabase
       .from('recipes')
-      // @ts-ignore - Supabase types need proper setup
-      .insert(recipeData)
+      .insert({
+        ...recipeData,
+        created_by: session.user.id,
+      })
       .select()
       .single();
 
     if (error) {
       console.error('Error saving recipe:', error);
       return NextResponse.json(
-        { error: 'Failed to save recipe' },
+        { error: 'Failed to save recipe', details: error.message },
         { status: 500 }
       );
     }

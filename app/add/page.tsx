@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,12 +9,37 @@ import { Loader2, Link as LinkIcon, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ParsedRecipe } from "@/lib/recipe-parser";
 import { RecipePreview } from "@/components/forms/RecipePreview";
+import { useAuth } from "@/lib/auth/context";
+import { Header } from "@/components/layout/Header";
 
 export default function AddRecipePage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [extractedRecipe, setExtractedRecipe] = useState<ParsedRecipe | null>(null);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login?redirect=/add');
+    }
+  }, [user, authLoading, router]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
 
   const handleExtract = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,15 +54,12 @@ export default function AddRecipePage() {
     setExtractedRecipe(null);
 
     try {
-      // For now, we'll use a dummy user ID since auth isn't set up yet
-      const userId = "00000000-0000-0000-0000-000000000000";
-      
       const response = await fetch("/api/recipe/extract", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url, userId }),
+        body: JSON.stringify({ url }),
       });
 
       const data = await response.json();
@@ -60,8 +83,6 @@ export default function AddRecipePage() {
     setError("");
 
     try {
-      const userId = "00000000-0000-0000-0000-000000000000";
-
       const response = await fetch("/api/recipe/save", {
         method: "POST",
         headers: {
@@ -69,7 +90,6 @@ export default function AddRecipePage() {
         },
         body: JSON.stringify({
           ...extractedRecipe,
-          created_by: userId,
           is_public: isPublic,
         }),
       });
@@ -91,16 +111,7 @@ export default function AddRecipePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <Link href="/" className="flex items-center gap-2 mr-4">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
-          <h1 className="text-xl font-bold">Add Recipe</h1>
-        </div>
-      </header>
+      <Header />
 
       <div className="container max-w-4xl py-8 px-4">
         {!extractedRecipe ? (

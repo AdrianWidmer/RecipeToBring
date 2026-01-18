@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Users, ChefHat, ArrowLeft, Heart } from "lucide-react";
+import { Clock, Users, ChefHat, Heart } from "lucide-react";
 import { getDifficultyColor, formatTime } from "@/lib/utils";
 import { Ingredient, Instruction, Recipe } from "@/lib/supabase/types";
 import { BringImportButton } from "@/components/recipe/BringImportButton";
+import { Header } from "@/components/layout/Header";
 
 export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -32,18 +33,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
-          <Button variant="ghost" size="icon">
-            <Heart className="h-5 w-5" />
-          </Button>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Image */}
       {recipe.image_url && (

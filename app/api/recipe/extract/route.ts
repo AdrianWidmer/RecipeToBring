@@ -1,23 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseRecipeFromUrl } from '@/lib/recipe-parser';
-import { supabaseAdmin } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server-client';
 
 export async function POST(request: NextRequest) {
   try {
-    const { url, userId } = await request.json();
+    const supabase = await createClient();
 
-    if (!url || !userId) {
+    // Get authenticated user
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    console.log('Session check:', { 
+      hasSession: !!session, 
+      userId: session?.user?.id,
+      sessionError 
+    });
+    
+    if (!session) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Unauthorized - Please sign in' },
+        { status: 401 }
+      );
+    }
+
+    const { url } = await request.json();
+
+    if (!url) {
+      return NextResponse.json(
+        { error: 'URL is required' },
         { status: 400 }
       );
     }
 
     // Check rate limit (10 recipes per day)
-    const { data: extractions, error: extractionError } = await supabaseAdmin
+    const { data: extractions, error: extractionError } = await supabase
       .from('recipe_extractions')
       .select('id')
-      .eq('user_id', userId)
+      .eq('user_id', session.user.id)
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
     if (extractionError) {
@@ -35,10 +53,9 @@ export async function POST(request: NextRequest) {
     const recipe = await parseRecipeFromUrl(url);
 
     // Record extraction for rate limiting
-    const { error: insertError } = await supabaseAdmin
+    const { error: insertError } = await supabase
       .from('recipe_extractions')
-      // @ts-ignore - Supabase types need proper setup
-      .insert({ user_id: userId });
+      .insert({ user_id: session.user.id });
     
     if (insertError) {
       console.error('Error recording extraction:', insertError);
