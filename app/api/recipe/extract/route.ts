@@ -64,6 +64,42 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(recipe);
   } catch (error) {
     console.error('Error extracting recipe:', error);
+    
+    // Handle specific error types with user-friendly Swiss German messages
+    if (error instanceof Error) {
+      if (error.message.includes('INSUFFICIENT_CONTENT')) {
+        // Extract the specific error message (after the prefix)
+        const detailMessage = error.message.replace('INSUFFICIENT_CONTENT: ', '');
+        return NextResponse.json(
+          { error: detailMessage },
+          { status: 400 }
+        );
+      }
+      
+      // Other specific error types
+      if (error.message.includes('Failed to fetch YouTube')) {
+        return NextResponse.json(
+          { error: 'Das YouTube-Video konnt nöd glade wärde. Probier es anders Video oder prüef d URL.' },
+          { status: 400 }
+        );
+      }
+      
+      if (error.message.includes('Failed to fetch TikTok')) {
+        return NextResponse.json(
+          { error: 'Das TikTok-Video konnt nöd glade wärde. Probier es anders Video oder prüef d URL.' },
+          { status: 400 }
+        );
+      }
+      
+      if (error.message.includes('Invalid YouTube URL')) {
+        return NextResponse.json(
+          { error: 'Ungültigi YouTube-URL. Prüef d URL und probiers nomal.' },
+          { status: 400 }
+        );
+      }
+    }
+    
+    // Generic error message
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Rezept konnt nöd extrahiert wärdä' },
       { status: 500 }

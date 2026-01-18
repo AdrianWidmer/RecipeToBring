@@ -24,6 +24,30 @@ export async function parseRecipeFromUrl(url: string): Promise<ParsedRecipe> {
       content = `Title: ${videoInfo.title}\n\nDescription:\n${videoInfo.description}`;
       imageUrl = videoInfo.thumbnail;
       rawTitle = videoInfo.title;
+      
+      // Debug logging for YouTube
+      console.log('[DEBUG Recipe Parser - YouTube]', {
+        sourceType,
+        contentLength: content.length,
+        descriptionLength: videoInfo.description.length,
+        titleLength: rawTitle.length,
+        contentPreview: content.substring(0, 300) + '...'
+      });
+      
+      // Validate sufficient content
+      if (videoInfo.description.length < 100) {
+        throw new Error(`INSUFFICIENT_CONTENT: YouTube video description is too short (${videoInfo.description.length} characters). The video may not contain a full recipe in the description. Please try a video with a complete recipe in the description, or use a website link instead.`);
+      }
+      
+      // Check for common "no recipe" phrases
+      const lowerDesc = videoInfo.description.toLowerCase();
+      if (lowerDesc.includes('recipe in bio') || 
+          lowerDesc.includes('link in bio') || 
+          lowerDesc.includes('full recipe in comments') ||
+          lowerDesc.includes('recipe link below')) {
+        throw new Error('INSUFFICIENT_CONTENT: The video description says the recipe is in the bio, comments, or a link. Please use that link instead.');
+      }
+      
       break;
     }
     case 'tiktok': {
@@ -31,6 +55,30 @@ export async function parseRecipeFromUrl(url: string): Promise<ParsedRecipe> {
       content = `Title: ${videoInfo.title}\n\nCaption:\n${videoInfo.description}`;
       imageUrl = videoInfo.thumbnail;
       rawTitle = videoInfo.title;
+      
+      // Debug logging for TikTok
+      console.log('[DEBUG Recipe Parser - TikTok]', {
+        sourceType,
+        contentLength: content.length,
+        descriptionLength: videoInfo.description.length,
+        titleLength: rawTitle.length,
+        contentPreview: content.substring(0, 300) + '...'
+      });
+      
+      // Validate sufficient content
+      if (videoInfo.description.length < 80) {
+        throw new Error(`INSUFFICIENT_CONTENT: TikTok caption is too short (${videoInfo.description.length} characters). TikTok recipes often have the full recipe on a linked website. Please use the website link from the video bio instead.`);
+      }
+      
+      // Check for common "no recipe" phrases
+      const lowerDesc = videoInfo.description.toLowerCase();
+      if (lowerDesc.includes('recipe in bio') || 
+          lowerDesc.includes('link in bio') ||
+          lowerDesc.includes('full recipe') ||
+          lowerDesc.includes('recipe below')) {
+        throw new Error('INSUFFICIENT_CONTENT: The TikTok caption indicates the recipe is in the bio or a link. Please use that link instead.');
+      }
+      
       break;
     }
     case 'website': {
@@ -43,7 +91,7 @@ export async function parseRecipeFromUrl(url: string): Promise<ParsedRecipe> {
   }
 
   // Extract recipe using AI
-  const extractedRecipe = await extractRecipeWithAI(content);
+  const extractedRecipe = await extractRecipeWithAI(content, sourceType);
 
   // Use extracted title if available, otherwise use raw title
   const finalTitle = extractedRecipe.title || rawTitle;

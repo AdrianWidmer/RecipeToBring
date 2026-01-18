@@ -18,8 +18,37 @@ export interface ExtractedRecipe {
   tags: string[];
 }
 
-export async function extractRecipeWithAI(content: string): Promise<ExtractedRecipe> {
+export async function extractRecipeWithAI(content: string, sourceType?: string): Promise<ExtractedRecipe> {
+  // Validate content length
+  if (!content || content.trim().length < 50) {
+    throw new Error('INSUFFICIENT_CONTENT: Not enough content to extract a recipe.');
+  }
+  
+  // Build context-aware prompt based on source type
+  let sourceContext = '';
+  if (sourceType === 'youtube') {
+    sourceContext = `IMPORTANT: This content is from a YouTube video description.
+- Extract ONLY the recipe information that is clearly present in the description
+- If ingredients are listed, extract them exactly as written
+- If amounts are mentioned, use those amounts
+- If amounts are vague (e.g., "some salt"), estimate reasonable amounts based on servings
+- DO NOT invent or hallucinate ingredients that aren't mentioned
+- DO NOT make up steps that aren't described`;
+  } else if (sourceType === 'tiktok') {
+    sourceContext = `IMPORTANT: This content is from a TikTok video caption.
+- Extract ONLY the recipe information that is clearly present in the caption
+- If ingredients are listed, extract them exactly as written
+- If amounts are mentioned, use those amounts
+- If amounts are vague, estimate reasonable amounts based on servings
+- DO NOT invent or hallucinate ingredients that aren't mentioned
+- DO NOT make up steps that aren't described`;
+  } else {
+    sourceContext = `This content is from a website. Extract the complete recipe information.`;
+  }
+
   const prompt = `Extract recipe information from the following content.
+
+${sourceContext}
 
 Rules:
 - Extract all text IN GERMAN (Standard German / Hochdeutsch)
@@ -31,6 +60,13 @@ Rules:
 
 Content:
 ${content}`;
+
+  console.log('[DEBUG OpenAI]', {
+    sourceType: sourceType || 'website',
+    contentLength: content.length,
+    promptLength: prompt.length,
+    contentPreview: content.substring(0, 300) + '...'
+  });
 
   try {
     const completion = await openai.chat.completions.create({
