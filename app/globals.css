@@ -97,6 +97,27 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Bring! Widget Button Styling - Match app design */
+.bring-button-container button,
+.bring-button-container a[href*="getbring.com"] {
+  @apply w-full inline-flex items-center justify-center;
+  @apply bg-gradient-to-r from-primary to-blue-600;
+  @apply hover:from-primary/90 hover:to-blue-700;
+  @apply text-white font-semibold;
+  @apply transition-all duration-200;
+  @apply shadow-lg hover:shadow-xl;
+  @apply rounded-lg px-6 py-3;
+  @apply text-base;
+  border: none !important;
+  text-decoration: none !important;
+  min-height: 48px;
+}
+
+.bring-button-container button:hover,
+.bring-button-container a[href*="getbring.com"]:hover {
+  transform: translateY(-1px);
+}
+
 /* Scientific, clean typography */
 h1, h2, h3, h4, h5, h6 {
   @apply font-bold tracking-tight;

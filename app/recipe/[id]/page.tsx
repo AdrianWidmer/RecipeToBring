@@ -33,9 +33,42 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
   const ingredients = recipe.ingredients as unknown as Ingredient[];
   const instructions = recipe.instructions as unknown as Instruction[];
 
+  // Generate Schema.org JSON-LD for Bring! parser and SEO
+  const recipeSchema = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": recipe.title,
+    "image": recipe.image_url || undefined,
+    "description": recipe.description || undefined,
+    "recipeYield": recipe.servings ? `${recipe.servings} servings` : undefined,
+    "prepTime": recipe.prep_time ? `PT${recipe.prep_time}M` : undefined,
+    "cookTime": recipe.cook_time ? `PT${recipe.cook_time}M` : undefined,
+    "totalTime": recipe.total_time ? `PT${recipe.total_time}M` : undefined,
+    "recipeIngredient": ingredients.map((ing) => {
+      const amount = ing.amount ? `${ing.amount}` : "";
+      const unit = ing.unit ? ` ${ing.unit}` : "";
+      const name = ` ${ing.name}`;
+      const notes = ing.notes ? ` (${ing.notes})` : "";
+      return `${amount}${unit}${name}${notes}`.trim();
+    }),
+    "recipeInstructions": instructions.map((inst) => ({
+      "@type": "HowToStep",
+      "position": inst.step_number,
+      "text": inst.description,
+    })),
+    "recipeCategory": recipe.tags?.join(", ") || undefined,
+    "keywords": recipe.tags?.join(", ") || undefined,
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-16">
       <ResizableNav />
+
+      {/* Schema.org JSON-LD for Bring! and SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeSchema) }}
+      />
 
       {/* Hero Section with Image */}
       {recipe.image_url && (
@@ -113,7 +146,6 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <RecipeIngredients
             initialServings={recipe.servings || 0}
             initialIngredients={ingredients}
-            recipeTitle={recipe.title}
           />
 
           {/* Instructions */}
