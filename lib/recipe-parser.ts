@@ -104,7 +104,7 @@ async function scrapeWebsite(url: string): Promise<{ content: string; image: str
     });
 
     let content = '';
-    let image = '';
+    let image: any = '';
     let title = '';
 
     if (recipeData) {
@@ -165,10 +165,31 @@ async function scrapeWebsite(url: string): Promise<{ content: string; image: str
               $('article img').first().attr('src') || '';
     }
 
+    // Normalize image to string (handle arrays and objects)
+    console.log('Raw image value:', typeof image, image);
+    
+    if (Array.isArray(image)) {
+      console.log('Image is array, taking last element');
+      image = image?.[image.length - 1] || '';
+    } else if (typeof image === 'object' && image !== null) {
+      // Handle structured data objects
+      console.log('Image is object, extracting URL');
+      image = (image as any).url || (image as any).contentUrl || '';
+    }
+    
+    // Ensure image is a string
+    image = String(image || '');
+    console.log('Normalized image:', image);
+
     // Ensure absolute URL for image
-    if (image && !image.startsWith('http')) {
-      const urlObj = new URL(url);
-      image = new URL(image, urlObj.origin).href;
+    if (image && typeof image === 'string' && !image.startsWith('http')) {
+      try {
+        const urlObj = new URL(url);
+        image = new URL(image, urlObj.origin).href;
+      } catch (e) {
+        console.error('Error creating absolute URL for image:', e);
+        image = '';
+      }
     }
 
     // Use placeholder if no image found
