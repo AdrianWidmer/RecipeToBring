@@ -1,19 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-
-declare global {
-  interface Window {
-    bringwidgets?: {
-      import: {
-        render: (element: HTMLElement, config: any) => void;
-        setUrl: (url: string) => void;
-        setRequestedQuantity: (quantity: number) => void;
-        setBaseQuantity: (quantity: number) => void;
-      };
-    };
-  }
-}
+import { useEffect, useState } from "react";
+import { ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface BringImportButtonProps {
   baseServings: number;
@@ -21,51 +10,39 @@ interface BringImportButtonProps {
 }
 
 export function BringImportButton({ baseServings, currentServings }: BringImportButtonProps) {
+  const [currentUrl, setCurrentUrl] = useState("");
+
   useEffect(() => {
-    // Load Bring! widget script
-    const script = document.createElement("script");
-    script.src = "https://platform.getbring.com/widgets/import.js";
-    script.async = true;
-    script.id = "bring-widget-script";
-
-    // Only add if not already present
-    if (!document.getElementById("bring-widget-script")) {
-      document.body.appendChild(script);
+    // Get current page URL
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
     }
-
-    return () => {
-      const existingScript = document.getElementById("bring-widget-script");
-      if (existingScript && document.body.contains(existingScript)) {
-        document.body.removeChild(existingScript);
-      }
-    };
   }, []);
 
-  // Update requested quantity when servings change
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.bringwidgets?.import) {
-      window.bringwidgets.import.setRequestedQuantity(currentServings);
-    }
-  }, [currentServings]);
+  const handleImport = () => {
+    if (!currentUrl) return;
+
+    // Use Bring!'s deep link API (more reliable than widget)
+    const bringUrl = new URL("https://api.getbring.com/rest/bringrecipes/deeplink");
+    bringUrl.searchParams.set("url", encodeURIComponent(currentUrl));
+    bringUrl.searchParams.set("source", "web");
+    bringUrl.searchParams.set("baseQuantity", baseServings.toString());
+    bringUrl.searchParams.set("requestedQuantity", currentServings.toString());
+
+    // Open in new window/tab (will redirect to Bring! app if installed)
+    window.open(bringUrl.toString(), "_blank");
+  };
 
   return (
-    <div
-      data-bring-import=""
-      data-bring-theme="dark"
-      data-bring-language="de"
-      data-bring-base-quantity={baseServings}
-      data-bring-requested-quantity={currentServings}
-      className="bring-button-container"
+    <Button
+      onClick={handleImport}
+      disabled={!currentUrl}
+      className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white font-semibold transition-all shadow-lg hover:shadow-xl"
+      size="lg"
     >
-      {/* Fallback link for when widget doesn't load */}
-      <a
-        href="https://www.getbring.com"
-        className="inline-flex items-center justify-center w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white font-semibold transition-all shadow-lg hover:shadow-xl rounded-lg px-6 py-3 text-center"
-      >
-        Zu Bring! hinzuefüegä
-      </a>
-    </div>
+      <ShoppingBag className="mr-2 h-5 w-5" />
+      Zu Bring! hinzuefüegä
+    </Button>
   );
 }
-
 
