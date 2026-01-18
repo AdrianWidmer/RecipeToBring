@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Unauthorized - Please sign in' },
+        { error: 'Nöd autorisiert - Bitte mäld dich aa' },
         { status: 401 }
       );
     }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Error saving recipe:', error);
       return NextResponse.json(
-        { error: 'Failed to save recipe', details: error.message },
+        { error: 'Rezäpt konnt nöd gspeicheret wärdä', details: error.message },
         { status: 500 }
       );
     }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in save route:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Intärnä Server-Fähler' },
       { status: 500 }
     );
   }

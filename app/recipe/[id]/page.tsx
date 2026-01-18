@@ -6,7 +6,7 @@ import { Clock, Users, ChefHat, Heart, Eye } from "lucide-react";
 import { getDifficultyColor, formatTime } from "@/lib/utils";
 import { Ingredient, Instruction, Recipe } from "@/lib/supabase/types";
 import { BringImportButton } from "@/components/recipe/BringImportButton";
-import { FloatingNav } from "@/components/layout/FloatingNav";
+import { ResizableNav } from "@/components/layout/ResizableNav";
 import { RecipeActions } from "@/components/recipe/RecipeActions";
 
 export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,8 +34,8 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
   const instructions = recipe.instructions as unknown as Instruction[];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <FloatingNav />
+    <div className="min-h-screen bg-background text-foreground pt-16">
+      <ResizableNav />
 
       {/* Hero Section with Image */}
       {recipe.image_url && (
@@ -72,7 +72,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
                 {recipe.servings && (
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
-                    <span>{recipe.servings} servings</span>
+                    <span>{recipe.servings} Portione</span>
                   </div>
                 )}
                 {recipe.total_time && (
@@ -89,7 +89,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
                 )}
                 <div className="flex items-center gap-2">
                   <Eye className="h-5 w-5 text-muted-foreground" />
-                  <span>{recipe.view_count + 1} views</span>
+                  <span>{recipe.view_count + 1} Aasiichte</span>
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
       )}
 
       {/* Content Section */}
-      <div className="container max-w-5xl mx-auto px-4 py-12 md:py-20">
+      <div className="container max-w-5xl mx-auto px-5 py-12 md:py-20">
         {/* Description */}
         {recipe.description && (
           <div className="mb-16">
@@ -114,7 +114,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
             <div className="sticky top-8">
               <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl p-8">
                 <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
-                  Ingredients
+                  Zuetate
                 </h2>
                 
                 <div className="space-y-4">
@@ -161,7 +161,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           {/* Instructions */}
           <div className="space-y-6">
             <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-primary bg-clip-text text-transparent">
-              Instructions
+              Aaleitige
             </h2>
 
             <div className="space-y-6">
@@ -196,14 +196,14 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
         <div className="mt-16 pt-12 border-t border-border">
           {recipe.source_url && (
             <div className="text-center mb-8">
-              <p className="text-muted-foreground mb-4">Original Recipe</p>
+              <p className="text-muted-foreground mb-4">Originali Rezäpt</p>
               <a
                 href={recipe.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
               >
-                <span className="text-lg">View Source</span>
+                <span className="text-lg">Quelle aaluege</span>
                 <span className="text-xl">→</span>
               </a>
             </div>

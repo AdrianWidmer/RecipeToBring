@@ -7,7 +7,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/auth/context';
 import { BackgroundBeams } from '@/components/aceternity/background-beams';
-import { FloatingNav } from '@/components/layout/FloatingNav';
+import { ResizableNav } from '@/components/layout/ResizableNav';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 
@@ -34,10 +34,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <FloatingNav />
+      <ResizableNav />
       <BackgroundBeams className="opacity-40" />
       
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 pt-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -31,8 +31,8 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
       <div className="bg-green-500/10 backdrop-blur-sm border border-green-500/20 rounded-2xl p-6 flex items-center gap-4">
         <CheckCircle2 className="h-8 w-8 text-green-400 flex-shrink-0" />
         <div>
-          <h3 className="text-lg font-semibold text-green-300">Recipe Extracted Successfully!</h3>
-          <p className="text-muted-foreground">Review the details and save to your collection</p>
+          <h3 className="text-lg font-semibold text-green-300">Rezäpt erfolgriich extrahiert!</h3>
+          <p className="text-muted-foreground">Prüef d'Details und speicher's i dinere Sammlig</p>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
           <div className="flex flex-wrap gap-3">
             <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-2">
               <Users className="w-4 h-4 mr-2" />
-              {recipe.servings} servings
+              {recipe.servings} Portione
             </Badge>
             {recipe.total_time && (
               <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 px-4 py-2">
@@ -100,7 +100,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
 
           {/* Ingredients */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-primary">Ingredients</h3>
+            <h3 className="text-2xl font-bold mb-6 text-primary">Zuetate</h3>
             <div className="grid md:grid-cols-2 gap-3">
               {(recipe.ingredients as Ingredient[]).map((ingredient, index) => (
                 <div
@@ -135,7 +135,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
 
           {/* Instructions */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-blue-500">Instructions</h3>
+            <h3 className="text-2xl font-bold mb-6 text-blue-500">Aaleitige</h3>
             <div className="space-y-4">
               {(recipe.instructions as Instruction[]).map((instruction) => (
                 <div
@@ -168,11 +168,11 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
           {/* Visibility Toggle */}
           <div className="flex items-center justify-between p-6 bg-card backdrop-blur-xl border border-border rounded-2xl">
             <div>
-              <h4 className="font-semibold mb-1 text-lg text-foreground">Recipe Visibility</h4>
+              <h4 className="font-semibold mb-1 text-lg text-foreground">Rezäpt-Sichtbarkeit</h4>
               <p className="text-muted-foreground">
                 {isPublic 
-                  ? "Everyone can see this recipe in the explore page" 
-                  : "Only you can access this recipe"}
+                  ? "Alli chönd das Rezäpt uf dä Entdeckä-Siite gseh" 
+                  : "Nur du chasch das Rezäpt gseh"}
               </p>
             </div>
             <Button
@@ -184,12 +184,12 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
               {isPublic ? (
                 <>
                   <Globe className="w-5 h-5 mr-2" />
-                  Public
+                  Öffentlich
                 </>
               ) : (
                 <>
                   <Lock className="w-5 h-5 mr-2" />
-                  Private
+                  Privat
                 </>
               )}
             </Button>
@@ -206,12 +206,12 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
               {loading ? (
                 <>
                   <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                  Saving...
+                  Speichere...
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="mr-3 h-5 w-5" />
-                  Save Recipe
+                  Rezäpt speichere
                 </>
               )}
             </Button>
@@ -222,7 +222,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
               size="lg"
               className="border-border hover:bg-card h-14 text-lg px-8 rounded-xl"
             >
-              Cancel
+              Abbreche
             </Button>
           </div>
         </div>

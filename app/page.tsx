@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FloatingNav } from "@/components/layout/FloatingNav";
+import { ResizableNav } from "@/components/layout/ResizableNav";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { ChefHat, Sparkles, Smartphone, Globe, Video, Zap, ArrowDown, Play } from "lucide-react";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -59,7 +59,7 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <FloatingNav />
+      <ResizableNav />
       
       {/* BackgroundBeams for entire page */}
       <div className="fixed inset-0 z-0 opacity-30">
@@ -68,10 +68,11 @@ export default function HomePage() {
 
       {/* HERO SECTION - TRUE Full Screen */}
       <section 
-        className="relative flex items-center justify-center overflow-hidden"
+        className="relative flex items-center justify-center overflow-hidden pt-20"
         style={{
-          height: '100vh',
+          minHeight: '100vh',
           padding: `${contentPadding}px`,
+          paddingTop: `${Math.max(contentPadding, 80)}px`,
         }}
       >
         <motion.div

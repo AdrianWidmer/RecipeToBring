@@ -49,7 +49,7 @@ export function BringImportButton({ recipeUrl }: { recipeUrl: string }) {
         <div id="bring-button-container" data-bring-import={recipeUrl} data-bring-theme="light">
           <Button className="w-full" size="lg">
             <ShoppingBag className="mr-2 h-5 w-5" />
-            Add to Bring! Shopping List
+            Zu Bring! Iikaufslischte hinzuefüegä
           </Button>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function BringImportButton({ recipeUrl }: { recipeUrl: string }) {
         <div id="bring-button-desktop" data-bring-import={recipeUrl} data-bring-theme="light">
           <Button size="lg" className="shadow-lg">
             <ShoppingBag className="mr-2 h-5 w-5" />
-            Add to Bring!
+            Zu Bring! hinzuefüegä
           </Button>
         </div>
       </div>

@@ -19,33 +19,7 @@ export interface ExtractedRecipe {
 }
 
 export async function extractRecipeWithAI(content: string): Promise<ExtractedRecipe> {
-  const prompt = `Extract recipe information from the following content and return ONLY valid JSON with this exact structure (no markdown, no code blocks, just raw JSON):
-
-{
-  "title": "string",
-  "description": "string (2-3 sentences)",
-  "servings": number,
-  "prep_time": number (in minutes, or null),
-  "cook_time": number (in minutes, or null),
-  "total_time": number (in minutes, or null),
-  "difficulty": "easy" | "medium" | "hard",
-  "ingredients": [
-    {
-      "name": "string",
-      "amount": number,
-      "unit": "string (g, ml, EL, TL, etc.)",
-      "notes": "string (optional)"
-    }
-  ],
-  "instructions": [
-    {
-      "step_number": number (starting from 1),
-      "description": "string",
-      "duration": number (minutes if specified, otherwise null)
-    }
-  ],
-  "tags": ["string"]
-}
+  const prompt = `Extract recipe information from the following content.
 
 Rules:
 - Extract all text IN GERMAN (Standard German / Hochdeutsch)
@@ -54,7 +28,6 @@ Rules:
 - Estimate difficulty based on steps and complexity
 - Include relevant tags in German (vegetarisch, vegan, glutenfrei, schnell, etc.)
 - Estimate times if not explicitly stated
-- Return ONLY the JSON object, nothing else - no explanations, no markdown
 
 Content:
 ${content}`;
@@ -65,15 +38,115 @@ ${content}`;
       messages: [
         {
           role: 'system',
-          content: 'You are a recipe extraction expert. Always return valid JSON only, no markdown formatting. Extract all recipe content in German (Standard German / Hochdeutsch).'
+          content: 'You are a recipe extraction expert. Extract all recipe content in German (Standard German / Hochdeutsch).'
         },
         {
           role: 'user',
           content: prompt
         }
       ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'recipe_extraction',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: {
+              title: {
+                type: 'string',
+                description: 'Recipe title in German'
+              },
+              description: {
+                type: 'string',
+                description: 'Brief description (2-3 sentences) in German'
+              },
+              servings: {
+                type: 'number',
+                description: 'Number of servings'
+              },
+              prep_time: {
+                type: ['number', 'null'],
+                description: 'Preparation time in minutes, or null if not specified'
+              },
+              cook_time: {
+                type: ['number', 'null'],
+                description: 'Cooking time in minutes, or null if not specified'
+              },
+              total_time: {
+                type: ['number', 'null'],
+                description: 'Total time in minutes, or null if not specified'
+              },
+              difficulty: {
+                type: 'string',
+                enum: ['easy', 'medium', 'hard'],
+                description: 'Recipe difficulty level'
+              },
+              ingredients: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      type: 'string',
+                      description: 'Ingredient name in German'
+                    },
+                    amount: {
+                      type: 'number',
+                      description: 'Quantity of ingredient'
+                    },
+                    unit: {
+                      type: 'string',
+                      description: 'Unit of measurement (g, ml, EL, TL, Prise, Stück, etc.)'
+                    },
+                    notes: {
+                      type: 'string',
+                      description: 'Optional preparation notes in German (e.g., gehackt, gewürfelt)'
+                    }
+                  },
+                  required: ['name', 'amount', 'unit', 'notes'],
+                  additionalProperties: false
+                },
+                description: 'List of ingredients'
+              },
+              instructions: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    step_number: {
+                      type: 'number',
+                      description: 'Step number starting from 1'
+                    },
+                    description: {
+                      type: 'string',
+                      description: 'Detailed instruction in German'
+                    },
+                    duration: {
+                      type: ['number', 'null'],
+                      description: 'Duration for this step in minutes, or null'
+                    }
+                  },
+                  required: ['step_number', 'description', 'duration'],
+                  additionalProperties: false
+                },
+                description: 'Step-by-step cooking instructions'
+              },
+              tags: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                description: 'Recipe tags in German (vegetarisch, vegan, glutenfrei, schnell, etc.)'
+              }
+            },
+            required: ['title', 'description', 'servings', 'prep_time', 'cook_time', 'total_time', 'difficulty', 'ingredients', 'instructions', 'tags'],
+            additionalProperties: false
+          }
+        }
+      },
       temperature: 0.3,
-      max_tokens: 2000,
+      max_tokens: 5000,
     });
 
     const responseText = completion.choices[0]?.message?.content?.trim();
@@ -82,14 +155,8 @@ ${content}`;
       throw new Error('No response from OpenAI');
     }
 
-    // Remove markdown code blocks if present
-    const jsonText = responseText
-      .replace(/^```json\s*/i, '')
-      .replace(/^```\s*/, '')
-      .replace(/```\s*$/, '')
-      .trim();
-
-    const recipe = JSON.parse(jsonText) as ExtractedRecipe;
+    // Parse JSON directly (response_format ensures valid JSON)
+    const recipe = JSON.parse(responseText) as ExtractedRecipe;
     
     // Validate required fields
     if (!recipe.title || !recipe.ingredients || !recipe.instructions) {

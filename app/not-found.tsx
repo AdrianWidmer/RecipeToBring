@@ -12,10 +12,10 @@ export default function NotFound() {
         
         <div className="space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-            Recipe Not Found
+            Rezäpt nöd gfunde
           </h1>
           <p className="text-xl text-muted-foreground">
-            Looks like this recipe has been eaten! 🍽️
+            Es gseht uus als wär das Rezäpt scho gässe worde! 🍽️
           </p>
         </div>
 
@@ -23,13 +23,13 @@ export default function NotFound() {
           <Link href="/">
             <Button size="lg" className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700">
               <Home className="w-5 h-5 mr-2" />
-              Go Home
+              Zur Startsiite
             </Button>
           </Link>
           <Link href="/add">
             <Button size="lg" variant="outline" className="border-border hover:border-primary">
               <ChefHat className="w-5 h-5 mr-2" />
-              Add a Recipe
+              Rezäpt hinzuefüegä
             </Button>
           </Link>
         </div>

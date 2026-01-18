@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Unauthorized - Please sign in' },
+        { error: 'Nöd autorisiert - Bitte mäld dich aa' },
         { status: 401 }
       );
     }
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     if (!url) {
       return NextResponse.json(
-        { error: 'URL is required' },
+        { error: 'URL wird bruucht' },
         { status: 400 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     if (extractions && extractions.length >= 10) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded. You can extract up to 10 recipes per day.' },
+        { error: 'Rate-Limit überschritte. Du chasch bis zu 10 Rezäpt pro Tag extrahiere.' },
         { status: 429 }
       );
     }
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error extracting recipe:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to extract recipe' },
+      { error: error instanceof Error ? error.message : 'Rezäpt konnt nöd extrahiert wärdä' },
       { status: 500 }
     );
   }

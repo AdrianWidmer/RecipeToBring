@@ -6,8 +6,8 @@ import { AuthProvider } from "@/lib/auth/context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RecipeToBring - Save Recipes to Your Shopping List",
-  description: "Extract recipes from websites, YouTube, and TikTok. Instantly add ingredients to your Bring! shopping list.",
+  title: "RecipeToBring - Rezäpt uf dini Iikaufslischte",
+  description: "Extrahier Rezäpt vo Websites, YouTube und TikTok. Füeg Zuetate sofort zu dinere Bring! Iikaufslischte hinzue.",
   manifest: "/manifest.json",
   themeColor: "#000000",
   appleWebApp: {
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="de" className="dark">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>

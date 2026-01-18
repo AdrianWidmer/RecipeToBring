@@ -8,7 +8,7 @@ import { Loader2, Link as LinkIcon, Sparkles, CheckCircle2 } from "lucide-react"
 import { ParsedRecipe } from "@/lib/recipe-parser";
 import { RecipePreview } from "@/components/forms/RecipePreview";
 import { useAuth } from "@/lib/auth/context";
-import { FloatingNav } from "@/components/layout/FloatingNav";
+import { ResizableNav } from "@/components/layout/ResizableNav";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { motion } from "framer-motion";
 
@@ -107,10 +107,10 @@ export default function AddRecipePage() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <FloatingNav />
+      <ResizableNav />
       <BackgroundBeams className="opacity-40" />
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center py-20 px-4">
+      <div className="relative z-10 min-h-screen flex items-center justify-center py-24 pt-32 px-4">
         <div className="w-full max-w-5xl">
           {!extractedRecipe ? (
             <motion.div

@@ -1,7 +1,7 @@
 {
   "name": "RecipeToBring",
   "short_name": "RecipeToBring",
-  "description": "Save recipes and add ingredients to your Bring! shopping list",
+  "description": "Speicher Rezäpt und füeg Zuetate zu dinere Bring! Iikaufslischte hinzue",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

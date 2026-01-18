@@ -31,7 +31,7 @@ export async function DELETE(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Nöd autorisiert" }, { status: 401 });
     }
 
     // Get recipe ID from request
@@ -39,7 +39,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!recipeId) {
       return NextResponse.json(
-        { error: "Recipe ID is required" },
+        { error: "Rezäpt-ID wird bruucht" },
         { status: 400 }
       );
     }
@@ -53,7 +53,7 @@ export async function DELETE(request: NextRequest) {
 
     if (fetchError || !recipe) {
       return NextResponse.json(
-        { error: "Recipe not found" },
+        { error: "Rezäpt nöd gfunde" },
         { status: 404 }
       );
     }
@@ -61,7 +61,7 @@ export async function DELETE(request: NextRequest) {
     // Verify the user owns this recipe
     if (recipe.created_by !== user.id) {
       return NextResponse.json(
-        { error: "You can only delete your own recipes" },
+        { error: "Du chasch nur dini eigene Rezäpt lösche" },
         { status: 403 }
       );
     }
@@ -75,19 +75,19 @@ export async function DELETE(request: NextRequest) {
     if (deleteError) {
       console.error("Error deleting recipe:", deleteError);
       return NextResponse.json(
-        { error: "Failed to delete recipe" },
+        { error: "Rezäpt konnt nöd glöscht wärdä" },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { message: "Recipe deleted successfully" },
+      { message: "Rezäpt erfolgriich glöscht" },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error in delete recipe API:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Intärnä Server-Fähler" },
       { status: 500 }
     );
   }

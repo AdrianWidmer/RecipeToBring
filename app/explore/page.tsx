@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Eye, Lock, Globe } from "lucide-react";
 import { formatTime } from "@/lib/utils";
 import { Recipe } from "@/lib/supabase/types";
-import { FloatingNav } from "@/components/layout/FloatingNav";
+import { ResizableNav } from "@/components/layout/ResizableNav";
 import { useAuth } from "@/lib/auth/context";
 import { supabase } from "@/lib/supabase/client";
 
@@ -157,7 +157,7 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <FloatingNav />
+      <ResizableNav />
 
       {/* Hero Header */}
       <div className="relative pt-32 pb-20 px-4 bg-gradient-to-b from-primary/10 to-background">
