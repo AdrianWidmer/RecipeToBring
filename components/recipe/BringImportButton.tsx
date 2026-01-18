@@ -24,7 +24,7 @@ export function BringImportButton({ baseServings, currentServings }: BringImport
 
     // Use Bring!'s deep link API (more reliable than widget)
     const bringUrl = new URL("https://api.getbring.com/rest/bringrecipes/deeplink");
-    bringUrl.searchParams.set("url", encodeURIComponent(currentUrl));
+    bringUrl.searchParams.set("url", currentUrl); // searchParams.set() already encodes
     bringUrl.searchParams.set("source", "web");
     bringUrl.searchParams.set("baseQuantity", baseServings.toString());
     bringUrl.searchParams.set("requestedQuantity", currentServings.toString());
