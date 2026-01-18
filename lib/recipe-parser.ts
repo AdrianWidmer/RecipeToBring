@@ -48,6 +48,12 @@ export async function parseRecipeFromUrl(url: string): Promise<ParsedRecipe> {
   // Use extracted title if available, otherwise use raw title
   const finalTitle = extractedRecipe.title || rawTitle;
 
+  // Use placeholder if no image found
+  if (!imageUrl || imageUrl === '') {
+    console.log('No image found from source, using placeholder');
+    imageUrl = '/placeholder-recipe.svg';
+  }
+
   return {
     ...extractedRecipe,
     title: finalTitle,
@@ -112,7 +118,13 @@ async function scrapeWebsite(url: string): Promise<{ content: string; image: str
 
       if (recipeData.recipeIngredient) {
         content += 'Ingredients:\n';
-        recipeData.recipeIngredient.forEach((ing: string) => {
+        
+        // Handle both array and single string cases
+        const ingredients = Array.isArray(recipeData.recipeIngredient) 
+          ? recipeData.recipeIngredient 
+          : [recipeData.recipeIngredient];
+        
+        ingredients.forEach((ing: string) => {
           content += `- ${ing}\n`;
         });
         content += '\n';
@@ -157,6 +169,12 @@ async function scrapeWebsite(url: string): Promise<{ content: string; image: str
     if (image && !image.startsWith('http')) {
       const urlObj = new URL(url);
       image = new URL(image, urlObj.origin).href;
+    }
+
+    // Use placeholder if no image found
+    if (!image || image === '') {
+      console.log('No image found on website, using placeholder');
+      image = '/placeholder-recipe.svg';
     }
 
     if (!content) {

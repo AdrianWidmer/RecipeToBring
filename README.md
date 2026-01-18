@@ -61,16 +61,7 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# OpenAI (already configured)
-OPENAI_API_KEY=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
-
-# YouTube API (Optional)
-YOUTUBE_API_KEY=your_youtube_api_key_here
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000

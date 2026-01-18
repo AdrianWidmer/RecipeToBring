@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
 
-    // Get authenticated user
-    const { data: { session } } = await supabase.auth.getSession();
+    // Get authenticated user (using getUser() for security)
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     
-    if (!session) {
+    if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized - Please sign in' },
         { status: 401 }
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       .from('recipes')
       .insert({
         ...recipeData,
-        created_by: session.user.id,
+        created_by: user.id,
       })
       .select()
       .single();

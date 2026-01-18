@@ -16,17 +16,17 @@ export function FloatingNav() {
 
   const navItems: Array<{ title: string; icon: React.ReactNode; href: string; onClick?: () => void }> = [
     {
-      title: 'Home',
+      title: 'Startsiite',
       icon: <Home className="h-full w-full" />,
       href: '/',
     },
     {
-      title: 'Add Recipe',
+      title: 'Rezäpt hinzuefüegä',
       icon: <Plus className="h-full w-full" />,
       href: user ? '/add' : '/login?redirect=/add',
     },
     {
-      title: 'Explore',
+      title: 'Entdeckä',
       icon: <Compass className="h-full w-full" />,
       href: '/explore',
     },
@@ -34,14 +34,14 @@ export function FloatingNav() {
 
   if (user) {
     navItems.push({
-      title: 'Sign Out',
+      title: 'Abmäldä',
       icon: <LogOut className="h-full w-full" />,
       href: '#',
       onClick: handleSignOut,
     });
   } else {
     navItems.push({
-      title: 'Sign In',
+      title: 'Aamäldä',
       icon: <User className="h-full w-full" />,
       href: '/login',
     });

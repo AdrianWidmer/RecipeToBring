@@ -32,26 +32,26 @@ export default function HomePage() {
 
   const features = [
     {
-      title: "AI-Powered Magic",
-      description: "GPT-4 instantly extracts every ingredient and step from any recipe URL",
+      title: "AI-Magie",
+      description: "GPT-4 extrahiert sofort alli Zuetate und Schritt vo jedem Rezept-URL",
       icon: <Sparkles className="h-8 w-8" />,
       gradient: "from-violet-500 to-purple-500",
     },
     {
-      title: "Video Intelligence",
-      description: "YouTube & TikTok cooking videos analyzed with AI transcript processing",
+      title: "Video-Intelligänz",
+      description: "YouTube & TikTok Kochvideos wärded mit AI-Transkript-Verarbeitig analysiert",
       icon: <Video className="h-8 w-8" />,
       gradient: "from-pink-500 to-rose-500",
     },
     {
       title: "Bring! Integration",
-      description: "One-click export to your shopping list. Cook smarter, not harder",
+      description: "Mit eim Klick uf dini Iikaufslischte exportiere. Choche intelligänter, nöd härter",
       icon: <Smartphone className="h-8 w-8" />,
       gradient: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Universal Compatibility",
-      description: "Works with thousands of recipe sites. Just paste the URL and go",
+      title: "Universelli Kompatibilität",
+      description: "Funktioniert mit tuusige vo Rezept-Sites. Eifach URL iifüege und loslege",
       icon: <Globe className="h-8 w-8" />,
       gradient: "from-emerald-500 to-teal-500",
     },
@@ -109,11 +109,11 @@ export default function HomePage() {
               className="mb-12"
             >
               <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[1.1] mb-8">
-                <span className="block text-foreground mb-4">From Recipe</span>
+                <span className="block text-foreground mb-4">Vom Rezäpt</span>
                 <span className="block bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent mb-4">
-                  To Shopping
+                  Zum Iikauf
                 </span>
-                <span className="block text-foreground">In Seconds</span>
+                <span className="block text-foreground">I Sekunde</span>
               </h1>
             </motion.div>
 
@@ -124,9 +124,9 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed font-light px-4"
             >
-              Extract recipes from any website or video.{" "}
-              <span className="text-primary font-medium">AI-powered</span> ingredient extraction.{" "}
-              <span className="text-primary font-medium">Instant</span> shopping lists.
+              Rezäpt vo jeder Website oder Video extrahiere.{" "}
+              <span className="text-primary font-medium">AI-gstüützt</span> Zuetate-Extraktionszieh.{" "}
+              <span className="text-primary font-medium">Sofort</span> Iikaufslischte.
             </motion.p>
 
             {/* CTA Buttons - More Spacing */}
@@ -147,7 +147,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity" />
                   <span className="relative flex items-center gap-3 text-white">
                     <ChefHat className="w-6 h-6" />
-                    Start Extracting
+                    Jetzt extrahiere
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
@@ -166,7 +166,7 @@ export default function HomePage() {
                 >
                   <span className="flex items-center gap-3 text-foreground group-hover:text-primary transition-colors">
                     <Play className="w-6 h-6" />
-                    See Examples
+                    Bispiil aaluege
                   </span>
                 </motion.button>
               </Link>
@@ -180,9 +180,9 @@ export default function HomePage() {
               className="grid grid-cols-3 gap-12 max-w-3xl mx-auto"
             >
               {[
-                { value: "10K+", label: "Recipes" },
-                { value: "99.9%", label: "Accuracy" },
-                { value: "< 10s", label: "Extract Time" },
+                { value: "10K+", label: "Rezäpt" },
+                { value: "99.9%", label: "Genauigkeit" },
+                { value: "< 10s", label: "Extraktionszit" },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="text-4xl md:text-5xl font-black bg-gradient-to-br from-primary to-blue-500 bg-clip-text text-transparent mb-3">
@@ -207,7 +207,7 @@ export default function HomePage() {
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-2"
             >
-              <span className="text-sm text-muted-foreground font-medium">Scroll to explore</span>
+              <span className="text-sm text-muted-foreground font-medium">Scrolle zum entdecke</span>
               <ArrowDown className="w-5 h-5 text-primary" />
             </motion.div>
           </motion.div>
@@ -227,11 +227,11 @@ export default function HomePage() {
           >
             <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8">
               <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                Everything You Need
+                Alles wo du bruchsch
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light">
-              Powerful AI features designed for the modern home cook
+              Mächtigi AI-Features für de moderne Hobbykoch
             </p>
           </motion.div>
 

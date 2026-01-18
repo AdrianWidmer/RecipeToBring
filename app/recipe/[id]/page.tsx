@@ -7,6 +7,7 @@ import { getDifficultyColor, formatTime } from "@/lib/utils";
 import { Ingredient, Instruction, Recipe } from "@/lib/supabase/types";
 import { BringImportButton } from "@/components/recipe/BringImportButton";
 import { FloatingNav } from "@/components/layout/FloatingNav";
+import { RecipeActions } from "@/components/recipe/RecipeActions";
 
 export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -191,21 +192,32 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           </div>
         </div>
 
-        {/* Source Link */}
-        {recipe.source_url && (
-          <div className="mt-16 pt-12 border-t border-border text-center">
-            <p className="text-muted-foreground mb-4">Original Recipe</p>
-            <a
-              href={recipe.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-            >
-              <span className="text-lg">View Source</span>
-              <span className="text-xl">→</span>
-            </a>
+        {/* Source Link & Actions */}
+        <div className="mt-16 pt-12 border-t border-border">
+          {recipe.source_url && (
+            <div className="text-center mb-8">
+              <p className="text-muted-foreground mb-4">Original Recipe</p>
+              <a
+                href={recipe.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+              >
+                <span className="text-lg">View Source</span>
+                <span className="text-xl">→</span>
+              </a>
+            </div>
+          )}
+          
+          {/* Recipe Actions (Delete button for owner) */}
+          <div className="text-center">
+            <RecipeActions 
+              recipeId={recipe.id}
+              recipeTitle={recipe.title}
+              recipeOwnerId={recipe.created_by}
+            />
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -6,16 +6,16 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
 
-    // Get authenticated user
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    // Get authenticated user (using getUser() for security)
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     
-    console.log('Session check:', { 
-      hasSession: !!session, 
-      userId: session?.user?.id,
-      sessionError 
+    console.log('Auth check:', { 
+      hasUser: !!user, 
+      userId: user?.id,
+      authError 
     });
     
-    if (!session) {
+    if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized - Please sign in' },
         { status: 401 }
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const { data: extractions, error: extractionError } = await supabase
       .from('recipe_extractions')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
     if (extractionError) {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     // Record extraction for rate limiting
     const { error: insertError } = await supabase
       .from('recipe_extractions')
-      .insert({ user_id: session.user.id });
+      .insert({ user_id: user.id });
     
     if (insertError) {
       console.error('Error recording extraction:', insertError);

@@ -27,7 +27,7 @@ export default function LoginPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-foreground text-lg">Loading...</div>
+        <div className="text-foreground text-lg">Lade...</div>
       </div>
     );
   }
@@ -48,16 +48,16 @@ export default function LoginPage() {
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
               <Sparkles className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium text-foreground">Welcome Back</span>
+              <span className="text-sm font-medium text-foreground">Willkomme zrugg</span>
             </div>
             
             <h1 className="text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                Sign In
+                Aamäldä
               </span>
             </h1>
             <p className="text-muted-foreground text-lg">
-              Continue your culinary journey
+              Setz dini kulinarischi Reis fort
             </p>
           </div>
 
@@ -140,28 +140,28 @@ export default function LoginPage() {
               localization={{
                 variables: {
                   magic_link: {
-                    email_input_label: 'Email address',
-                    email_input_placeholder: 'your@email.com',
-                    button_label: 'Send Magic Link',
-                    loading_button_label: 'Sending...',
-                    link_text: 'Send a magic link',
-                    confirmation_text: 'Check your email for the magic link',
+                    email_input_label: 'E-Mail Adrässe',
+                    email_input_placeholder: 'dini@email.com',
+                    button_label: 'Magic Link schickä',
+                    loading_button_label: 'Schicke...',
+                    link_text: 'En Magic Link schickä',
+                    confirmation_text: 'Lueg i dim E-Mail Postfach nach em Magic Link',
                   },
                   sign_in: {
-                    email_label: 'Email',
-                    password_label: 'Password',
-                    button_label: 'Sign in',
-                    loading_button_label: 'Signing in...',
-                    social_provider_text: 'Continue with {{provider}}',
-                    link_text: 'Already have an account?',
+                    email_label: 'E-Mail',
+                    password_label: 'Passwort',
+                    button_label: 'Aamäldä',
+                    loading_button_label: 'Mälde aa...',
+                    social_provider_text: 'Wiitermachä mit {{provider}}',
+                    link_text: 'Hesch scho en Account?',
                   },
                   sign_up: {
-                    email_label: 'Email',
-                    password_label: 'Password',
-                    button_label: 'Sign up',
-                    loading_button_label: 'Signing up...',
-                    social_provider_text: 'Continue with {{provider}}',
-                    link_text: "Don't have an account?",
+                    email_label: 'E-Mail',
+                    password_label: 'Passwort',
+                    button_label: 'Registrierä',
+                    loading_button_label: 'Registriere...',
+                    social_provider_text: 'Wiitermachä mit {{provider}}',
+                    link_text: 'Hesch no ke Account?',
                   },
                 },
               }}

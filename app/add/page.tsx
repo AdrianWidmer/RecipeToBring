@@ -42,7 +42,7 @@ export default function AddRecipePage() {
     e.preventDefault();
     
     if (!url.trim()) {
-      setError("Please enter a URL");
+      setError('Bitte gib en URL ii');
       return;
     }
 
@@ -62,12 +62,12 @@ export default function AddRecipePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to extract recipe");
+        throw new Error(data.error || "Rezäpt konnt nöd extrahiert wärdä");
       }
 
       setExtractedRecipe(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to extract recipe");
+      setError(err instanceof Error ? err.message : "Rezäpt konnt nöd extrahiert wärdä");
     } finally {
       setLoading(false);
     }
@@ -94,12 +94,12 @@ export default function AddRecipePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to save recipe");
+        throw new Error(data.error || "Rezäpt konnt nöd gspeicheret wärdä");
       }
 
-      window.location.href = `/recipe/${data.id}`;
+      router.push(`/recipe/${data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save recipe");
+      setError(err instanceof Error ? err.message : "Rezäpt konnt nöd gspeicheret wärdä");
     } finally {
       setLoading(false);
     }
@@ -110,27 +110,28 @@ export default function AddRecipePage() {
       <FloatingNav />
       <BackgroundBeams className="opacity-40" />
 
-      <div className="relative z-10 container max-w-5xl py-20 px-4 min-h-screen flex items-center">
-        {!extractedRecipe ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full"
-          >
+      <div className="relative z-10 min-h-screen flex items-center justify-center py-20 px-4">
+        <div className="w-full max-w-5xl">
+          {!extractedRecipe ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full"
+            >
             {/* Hero Text */}
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-6 py-3 mb-6">
                 <Sparkles className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium text-foreground">AI-Powered Recipe Extraction</span>
+                <span className="text-sm font-medium text-foreground">AI-gstützti Rezäpt-Extraktion</span>
               </div>
               
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                  Add Your Recipe
+                  Füeg dis Rezäpt hinzue
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Paste any recipe URL and let our AI do the magic
+                Füeg irgendän Rezäpt-URL ii und lass üsi AI d'Magie machä
               </p>
             </div>
 
@@ -138,11 +139,11 @@ export default function AddRecipePage() {
             <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl p-8 md:p-12 shadow-2xl">
               <form onSubmit={handleExtract} className="space-y-6">
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-muted-foreground">Recipe URL</label>
+                  <label className="text-sm font-medium text-muted-foreground">Rezäpt URL</label>
                   <div className="relative">
                     <Input
                       type="url"
-                      placeholder="https://www.example.com/recipe or https://youtube.com/..."
+                      placeholder="https://www.example.com/rezept oder https://youtube.com/..."
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       disabled={loading}
@@ -171,12 +172,12 @@ export default function AddRecipePage() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                      Extracting Recipe...
+                      Extrahiere Rezäpt...
                     </>
                   ) : (
                     <>
                       <Sparkles className="mr-3 h-5 w-5" />
-                      Extract Recipe
+                      Rezäpt extrahiere
                     </>
                   )}
                 </Button>
@@ -184,10 +185,10 @@ export default function AddRecipePage() {
 
               {/* Supported Sources */}
               <div className="mt-10 pt-8 border-t border-border">
-                <p className="text-sm font-medium text-muted-foreground mb-4">Supported Sources:</p>
+                <p className="text-sm font-medium text-muted-foreground mb-4">Unterstützti Quellä:</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { name: 'Websites', icon: '🌐' },
+                    { name: 'Websitene', icon: '🌐' },
                     { name: 'YouTube', icon: '📺' },
                     { name: 'TikTok', icon: '🎵' },
                     { name: 'Blogs', icon: '📝' },
@@ -206,9 +207,9 @@ export default function AddRecipePage() {
               {/* Features List */}
               <div className="mt-8 grid md:grid-cols-3 gap-4">
                 {[
-                  'AI-powered extraction',
-                  'Instant ingredient list',
-                  'Step-by-step instructions',
+                  'AI-gstützti Extraktion',
+                  'Sofort Zuetate-Lischte',
+                  'Schritt-für-Schritt Aaleitige',
                 ].map((feature) => (
                   <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -233,6 +234,7 @@ export default function AddRecipePage() {
             />
           </motion.div>
         )}
+        </div>
       </div>
     </div>
   );

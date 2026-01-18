@@ -19,51 +19,53 @@ export interface ExtractedRecipe {
 }
 
 export async function extractRecipeWithAI(content: string): Promise<ExtractedRecipe> {
-  const prompt = `Extract recipe information from the following content and return ONLY valid JSON with this exact structure (no markdown, no code blocks, just JSON):
+  const prompt = `Extract recipe information from the following content and return ONLY valid JSON with this exact structure (no markdown, no code blocks, just raw JSON):
+
 {
   "title": "string",
-  "description": "string (2-3 sentences summarizing the recipe)",
+  "description": "string (2-3 sentences)",
   "servings": number,
-  "prep_time": number (in minutes, can be null),
-  "cook_time": number (in minutes, can be null),
-  "total_time": number (in minutes, can be null),
+  "prep_time": number (in minutes, or null),
+  "cook_time": number (in minutes, or null),
+  "total_time": number (in minutes, or null),
   "difficulty": "easy" | "medium" | "hard",
   "ingredients": [
     {
-      "name": "string (ingredient name)",
+      "name": "string",
       "amount": number,
-      "unit": "string (cups, tbsp, g, oz, etc.)",
-      "notes": "string (optional, like 'chopped', 'diced')"
+      "unit": "string (g, ml, EL, TL, etc.)",
+      "notes": "string (optional)"
     }
   ],
   "instructions": [
     {
       "step_number": number (starting from 1),
-      "description": "string (clear instruction)",
+      "description": "string",
       "duration": number (minutes if specified, otherwise null)
     }
   ],
-  "tags": ["string"] (e.g., ["vegetarian", "quick", "dinner", "italian"])
+  "tags": ["string"]
 }
 
 Rules:
-- Extract all ingredients with proper amounts and units
-- Number instructions sequentially
-- Estimate difficulty based on number of steps and complexity
-- Include relevant dietary tags (vegetarian, vegan, gluten-free, etc.)
+- Extract all text IN GERMAN (Standard German / Hochdeutsch)
+- Use metric units (g, ml, EL, TL, Prise, etc.)
+- Number instructions sequentially starting from 1
+- Estimate difficulty based on steps and complexity
+- Include relevant tags in German (vegetarisch, vegan, glutenfrei, schnell, etc.)
 - Estimate times if not explicitly stated
-- Return ONLY the JSON object, nothing else
+- Return ONLY the JSON object, nothing else - no explanations, no markdown
 
 Content:
 ${content}`;
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: 'You are a recipe extraction expert. Always return valid JSON only, no markdown formatting.'
+          content: 'You are a recipe extraction expert. Always return valid JSON only, no markdown formatting. Extract all recipe content in German (Standard German / Hochdeutsch).'
         },
         {
           role: 'user',
