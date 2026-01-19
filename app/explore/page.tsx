@@ -10,7 +10,7 @@ import { Recipe } from "@/lib/supabase/types";
 import { ResizableNav } from "@/components/layout/ResizableNav";
 import { useAuth } from "@/lib/auth/context";
 import { supabase } from "@/lib/supabase/client";
-import { SearchFilter } from "@/components/explore/SearchFilter";
+import { SearchFilter, FilterOptions } from "@/components/explore/SearchFilter";
 
 type VisibilityType = 'public' | 'private' | 'friends_only';
 
@@ -20,7 +20,12 @@ export default function ExplorePage() {
   const [privateRecipes, setPrivateRecipes] = useState<Recipe[]>([]);
   const [friendsRecipes, setFriendsRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState<FilterOptions>({
+    searchQuery: "",
+    timeFilter: null,
+    tagFilters: [],
+  });
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -36,25 +41,40 @@ export default function ExplorePage() {
 
       setPublicRecipes(publicData || []);
 
+      let privateData: Recipe[] = [];
+      let friendsData: Recipe[] = [];
+
       // If user is logged in, also fetch their private and friends-only recipes
       if (user) {
-        const { data: privateData } = await supabase
+        const { data: privateResult } = await supabase
           .from("recipes")
           .select("*")
           .eq("created_by", user.id)
           .eq("visibility", "private")
           .order("created_at", { ascending: false });
 
-        setPrivateRecipes(privateData || []);
+        privateData = privateResult || [];
+        setPrivateRecipes(privateData);
 
-        const { data: friendsData } = await supabase
+        const { data: friendsResult } = await supabase
           .from("recipes")
           .select("*")
           .eq("visibility", "friends_only")
           .order("created_at", { ascending: false });
 
-        setFriendsRecipes(friendsData || []);
+        friendsData = friendsResult || [];
+        setFriendsRecipes(friendsData);
       }
+
+      // Extract unique tags from all recipes
+      const allRecipes = [...(publicData || []), ...privateData, ...friendsData];
+      const tagsSet = new Set<string>();
+      allRecipes.forEach((recipe) => {
+        if (recipe.tags && Array.isArray(recipe.tags)) {
+          recipe.tags.forEach((tag) => tagsSet.add(tag));
+        }
+      });
+      setAvailableTags(Array.from(tagsSet).sort());
 
       setLoading(false);
     };
@@ -62,30 +82,64 @@ export default function ExplorePage() {
     fetchRecipes();
   }, [user]);
 
-  // Filter recipes based on search query
+  // Filter recipes based on search query, time, and tags
   const filterRecipes = (recipes: Recipe[]) => {
-    if (!searchQuery.trim()) return recipes;
-    
-    const query = searchQuery.toLowerCase();
-    
-    return recipes.filter((recipe) => {
-      // Search in title
-      if (recipe.title.toLowerCase().includes(query)) return true;
-      
-      // Search in description
-      if (recipe.description?.toLowerCase().includes(query)) return true;
-      
-      // Search in tags
-      if (recipe.tags?.some((tag) => tag.toLowerCase().includes(query))) return true;
-      
-      // Search in ingredients
-      if (recipe.ingredients) {
-        const ingredientsString = JSON.stringify(recipe.ingredients).toLowerCase();
-        if (ingredientsString.includes(query)) return true;
-      }
-      
-      return false;
-    });
+    let filtered = recipes;
+
+    // Apply search query filter
+    if (filters.searchQuery.trim()) {
+      const query = filters.searchQuery.toLowerCase();
+      filtered = filtered.filter((recipe) => {
+        // Search in title
+        if (recipe.title.toLowerCase().includes(query)) return true;
+        
+        // Search in description
+        if (recipe.description?.toLowerCase().includes(query)) return true;
+        
+        // Search in tags
+        if (recipe.tags?.some((tag) => tag.toLowerCase().includes(query))) return true;
+        
+        // Search in ingredients
+        if (recipe.ingredients) {
+          const ingredientsString = JSON.stringify(recipe.ingredients).toLowerCase();
+          if (ingredientsString.includes(query)) return true;
+        }
+        
+        return false;
+      });
+    }
+
+    // Apply time filter
+    if (filters.timeFilter) {
+      filtered = filtered.filter((recipe) => {
+        if (!recipe.total_time) return false;
+        
+        const totalTimeMinutes = recipe.total_time;
+        
+        if (filters.timeFilter === "30") {
+          return totalTimeMinutes <= 30;
+        } else if (filters.timeFilter === "60") {
+          return totalTimeMinutes <= 60;
+        } else if (filters.timeFilter === "120") {
+          return totalTimeMinutes <= 120;
+        } else if (filters.timeFilter === "120+") {
+          return totalTimeMinutes > 120;
+        }
+        
+        return true;
+      });
+    }
+
+    // Apply tag filters
+    if (filters.tagFilters.length > 0) {
+      filtered = filtered.filter((recipe) => {
+        if (!recipe.tags || recipe.tags.length === 0) return false;
+        // Recipe must have at least one of the selected tags
+        return filters.tagFilters.some((tag) => recipe.tags?.includes(tag));
+      });
+    }
+
+    return filtered;
   };
 
   const filteredPublicRecipes = filterRecipes(publicRecipes);
@@ -235,8 +289,9 @@ export default function ExplorePage() {
       <div className="container max-w-7xl mx-auto px-4 -mt-8 mb-8 relative z-10">
         <div className="max-w-2xl mx-auto">
           <SearchFilter 
-            onSearchChange={setSearchQuery}
-            totalResults={searchQuery ? totalResults : undefined}
+            onFilterChange={setFilters}
+            totalResults={filters.searchQuery || filters.timeFilter || filters.tagFilters.length > 0 ? totalResults : undefined}
+            availableTags={availableTags}
           />
         </div>
       </div>
@@ -313,11 +368,11 @@ export default function ExplorePage() {
             {/* Empty State */}
             {!loading && filteredPublicRecipes.length === 0 && filteredPrivateRecipes.length === 0 && filteredFriendsRecipes.length === 0 && (
               <div className="text-center py-20">
-                {searchQuery ? (
+                {filters.searchQuery || filters.timeFilter || filters.tagFilters.length > 0 ? (
                   <>
                     <div className="text-6xl mb-6">🔍</div>
                     <h3 className="text-2xl font-bold text-muted-foreground mb-4">Kei Rezept gfunde</h3>
-                    <p className="text-muted-foreground mb-8">Probier en anderen Suechbegriff</p>
+                    <p className="text-muted-foreground mb-8">Probier en anderen Suechbegriff oder Filter</p>
                   </>
                 ) : (
                   <>

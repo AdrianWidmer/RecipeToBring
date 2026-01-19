@@ -62,7 +62,7 @@ export function DeleteRecipeButton({ recipeId, recipeTitle }: DeleteRecipeButton
           className="border-red-500/50 hover:border-red-500 hover:bg-red-500/10 text-red-500 hover:text-red-400"
         >
           <Trash2 className="w-5 h-5 mr-2" />
-          Delete Recipe
+          Rezept lösche
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-card border-border">
