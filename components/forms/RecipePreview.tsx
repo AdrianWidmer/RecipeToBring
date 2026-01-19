@@ -290,21 +290,21 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
           </div>
 
           {/* Actions */}
-          <div className="flex gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Button
               onClick={() => onSave(visibility)}
               disabled={loading}
-              className="flex-1 h-14 text-lg bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 rounded-xl font-semibold"
+              className="w-full sm:flex-1 h-14 text-base sm:text-lg bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 rounded-xl font-semibold"
               size="lg"
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                  <Loader2 className="mr-2 sm:mr-3 h-5 w-5 animate-spin" />
                   Speichere...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="mr-3 h-5 w-5" />
+                  <CheckCircle2 className="mr-2 sm:mr-3 h-5 w-5" />
                   Rezept speichere
                 </>
               )}
@@ -314,7 +314,7 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
               disabled={loading}
               variant="outline"
               size="lg"
-              className="border-border hover:bg-card h-14 text-lg px-8 rounded-xl"
+              className="w-full sm:w-auto border-border hover:bg-card h-14 text-base sm:text-lg px-8 rounded-xl"
             >
               Abbreche
             </Button>

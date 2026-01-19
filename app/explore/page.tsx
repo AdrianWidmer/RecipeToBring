@@ -50,7 +50,6 @@ export default function ExplorePage() {
         const { data: friendsData } = await supabase
           .from("recipes")
           .select("*")
-          .eq("created_by", user.id)
           .eq("visibility", "friends_only")
           .order("created_at", { ascending: false });
 

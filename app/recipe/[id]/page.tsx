@@ -85,7 +85,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           {/* Title Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
             <div className="container max-w-5xl mx-auto">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
                 {recipe.tags && recipe.tags.map((tag) => (
                   <Badge 
                     key={tag} 
@@ -101,7 +101,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
               </h1>
 
               {/* Meta Info */}
-              <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-3 md:gap-6 text-muted-foreground">
                 {recipe.servings && (
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
