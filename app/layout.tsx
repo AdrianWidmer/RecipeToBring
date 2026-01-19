@@ -7,7 +7,7 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RecipeToBring - Rezept uf dini Iikaufslischte",
+  title: "Brings Rezept - Rezept uf dini Iikaufslischte",
   description: "Extrahier Rezept vo Websites, YouTube und TikTok. Füeg Zuetate sofort zu dinere Bring! Iikaufslischte hinzue.",
   manifest: "/manifest.json",
   themeColor: "#000000",

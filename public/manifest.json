@@ -1,6 +1,6 @@
 {
-  "name": "RecipeToBring",
-  "short_name": "RecipeToBring",
+  "name": "Brings Rezept",
+  "short_name": "Brings Rezept",
   "description": "Speicher Rezept und füeg Zuetate zu dinere Bring! Iikaufslischte hinzue",
   "start_url": "/",
   "scope": "/",

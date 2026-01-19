@@ -42,6 +42,10 @@ export function ResizableNav() {
       name: "Entdecke",
       link: "/explore",
     },
+    {
+      name: "Fründe & Familie",
+      link: user ? "/friends" : "/login?redirect=/friends",
+    },
   ];
 
   return (
@@ -51,10 +55,10 @@ export function ResizableNav() {
         {/* Logo */}
         <Link href="/" className="relative z-20 flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-            <span className="text-white font-bold text-lg">R</span>
+            <span className="text-white font-bold text-lg">B</span>
           </div>
           <span className="font-bold text-lg bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            RecipeToBring
+            Brings Rezept
           </span>
         </Link>
 
@@ -88,10 +92,10 @@ export function ResizableNav() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">R</span>
+              <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="font-bold text-lg bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              RecipeToBring
+              Brings Rezept
             </span>
           </Link>
 

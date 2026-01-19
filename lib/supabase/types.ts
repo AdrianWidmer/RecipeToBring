@@ -50,6 +50,7 @@ export interface Database {
           instructions: Json
           tags: string[] | null
           is_public: boolean
+          visibility: 'public' | 'private' | 'friends_only'
           view_count: number
           created_at: string
           updated_at: string
@@ -71,6 +72,7 @@ export interface Database {
           instructions: Json
           tags?: string[] | null
           is_public?: boolean
+          visibility?: 'public' | 'private' | 'friends_only'
           view_count?: number
           created_at?: string
           updated_at?: string
@@ -92,7 +94,34 @@ export interface Database {
           instructions?: Json
           tags?: string[] | null
           is_public?: boolean
+          visibility?: 'public' | 'private' | 'friends_only'
           view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      friendships: {
+        Row: {
+          id: string
+          user_id: string
+          friend_id: string
+          status: 'pending' | 'accepted' | 'rejected'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          friend_id: string
+          status?: 'pending' | 'accepted' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          friend_id?: string
+          status?: 'pending' | 'accepted' | 'rejected'
           created_at?: string
           updated_at?: string
         }
@@ -163,3 +192,9 @@ export type Instruction = {
 export type Recipe = Database['public']['Tables']['recipes']['Row']
 export type RecipeInsert = Database['public']['Tables']['recipes']['Insert']
 export type RecipeUpdate = Database['public']['Tables']['recipes']['Update']
+
+export type Friendship = Database['public']['Tables']['friendships']['Row']
+export type FriendshipInsert = Database['public']['Tables']['friendships']['Insert']
+export type FriendshipUpdate = Database['public']['Tables']['friendships']['Update']
+
+export type Profile = Database['public']['Tables']['profiles']['Row']

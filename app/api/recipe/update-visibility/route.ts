@@ -16,11 +16,34 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Get recipe ID and new visibility from request
-    const { recipeId, isPublic } = await request.json();
+    const body = await request.json();
+    const { recipeId, isPublic, visibility } = body;
 
-    if (!recipeId || typeof isPublic !== "boolean") {
+    // Support both old (isPublic) and new (visibility) format
+    let newVisibility: 'public' | 'private' | 'friends_only';
+    
+    if (visibility !== undefined) {
+      // New format
+      if (!['public', 'private', 'friends_only'].includes(visibility)) {
+        return NextResponse.json(
+          { error: "Ungültigi Sichtbarkeit" },
+          { status: 400 }
+        );
+      }
+      newVisibility = visibility;
+    } else if (isPublic !== undefined) {
+      // Old format (backward compatibility)
+      newVisibility = isPublic ? 'public' : 'private';
+    } else {
       return NextResponse.json(
         { error: "Rezept-ID und Sichtbarkeit sind erforderlich" },
+        { status: 400 }
+      );
+    }
+
+    if (!recipeId) {
+      return NextResponse.json(
+        { error: "Rezept-ID isch erforderlich" },
         { status: 400 }
       );
     }
@@ -50,7 +73,10 @@ export async function PATCH(request: NextRequest) {
     // Update the visibility
     const { error: updateError } = await supabase
       .from("recipes")
-      .update({ is_public: isPublic })
+      .update({ 
+        visibility: newVisibility,
+        is_public: newVisibility === 'public' // Keep is_public in sync for backward compatibility
+      })
       .eq("id", recipeId);
 
     if (updateError) {
@@ -64,7 +90,8 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(
       { 
         message: "Sichtbarkeit erfolgriich gänderet",
-        isPublic 
+        visibility: newVisibility,
+        isPublic: newVisibility === 'public'
       },
       { status: 200 }
     );
