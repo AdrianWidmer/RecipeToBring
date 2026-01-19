@@ -2,24 +2,62 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Loader2, Globe, Lock, CheckCircle2 } from "lucide-react";
+import { Clock, Users, ChefHat, Loader2, Globe, Lock, CheckCircle2, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { ParsedRecipe } from "@/lib/recipe-parser";
 import { getDifficultyColor, formatTime } from "@/lib/utils";
 import { Ingredient, Instruction } from "@/lib/supabase/types";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+type Visibility = 'public' | 'private' | 'friends_only';
+
+type VisibilityOption = {
+  value: Visibility;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+  color: string;
+};
+
+const visibilityOptions: VisibilityOption[] = [
+  {
+    value: 'public',
+    label: 'Öffentlich',
+    icon: <Globe className="h-5 w-5" />,
+    description: 'Alli chönd das Rezept uf dä Entdeck-Siite gseh',
+    color: 'green',
+  },
+  {
+    value: 'friends_only',
+    label: 'Fründe & Familie',
+    icon: <Users className="h-5 w-5" />,
+    description: 'Nur dini Fründe chönd das Rezept gseh',
+    color: 'blue',
+  },
+  {
+    value: 'private',
+    label: 'Privat',
+    icon: <Lock className="h-5 w-5" />,
+    description: 'Nur du chasch das Rezept gseh',
+    color: 'orange',
+  },
+];
 
 interface RecipePreviewProps {
   recipe: ParsedRecipe;
-  onSave: (isPublic: boolean) => void;
+  onSave: (visibility: Visibility) => void;
   onCancel: () => void;
   loading: boolean;
   error: string;
 }
 
 export function RecipePreview({ recipe, onSave, onCancel, loading, error }: RecipePreviewProps) {
-  const [isPublic, setIsPublic] = useState(false);
+  const [visibility, setVisibility] = useState<Visibility>('private');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const currentOption = visibilityOptions.find(opt => opt.value === visibility) || visibilityOptions[2];
 
   return (
     <motion.div
@@ -165,40 +203,96 @@ export function RecipePreview({ recipe, onSave, onCancel, loading, error }: Reci
             </div>
           )}
 
-          {/* Visibility Toggle */}
-          <div className="flex items-center justify-between p-6 bg-card backdrop-blur-xl border border-border rounded-2xl">
-            <div>
-              <h4 className="font-semibold mb-1 text-lg text-foreground">Rezept-Sichtbarkeit</h4>
-              <p className="text-muted-foreground">
-                {isPublic 
-                  ? "Alli chönd das Rezept uf dä Entdeck-Siite gseh" 
-                  : "Nur du chasch das Rezept gseh"}
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setIsPublic(!isPublic)}
-              className={`border-border ${isPublic ? 'bg-primary/20 border-primary/30' : ''}`}
-            >
-              {isPublic ? (
+          {/* Visibility Selector */}
+          <div className="p-6 bg-card backdrop-blur-xl border border-border rounded-2xl">
+            <h4 className="font-semibold mb-3 text-lg text-foreground">Rezept-Sichtbarkeit</h4>
+            <div className="relative">
+              {/* Current Selection Button */}
+              <Button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                variant="outline"
+                size="lg"
+                className={cn(
+                  "w-full justify-between border-border hover:bg-accent transition-all duration-200",
+                  currentOption.color === 'green' && "bg-green-500/10 border-green-500/30 hover:bg-green-500/20",
+                  currentOption.color === 'blue' && "bg-blue-500/10 border-blue-500/30 hover:bg-blue-500/20",
+                  currentOption.color === 'orange' && "bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20"
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  {currentOption.icon}
+                  <span>{currentOption.label}</span>
+                </div>
+                <ChevronDown className={cn(
+                  "h-4 w-4 transition-transform",
+                  isOpen && "transform rotate-180"
+                )} />
+              </Button>
+
+              {/* Dropdown Menu */}
+              {isOpen && (
                 <>
-                  <Globe className="w-5 h-5 mr-2" />
-                  Öffentlich
-                </>
-              ) : (
-                <>
-                  <Lock className="w-5 h-5 mr-2" />
-                  Privat
+                  {/* Backdrop */}
+                  <div 
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsOpen(false)}
+                  />
+                  
+                  {/* Dropdown */}
+                  <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-card border border-border rounded-lg shadow-xl overflow-hidden">
+                    {visibilityOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => {
+                          setVisibility(option.value);
+                          setIsOpen(false);
+                        }}
+                        className={cn(
+                          "w-full px-4 py-3 text-left hover:bg-accent transition-colors",
+                          "flex items-start gap-3 border-b border-border last:border-b-0",
+                          visibility === option.value && "bg-accent"
+                        )}
+                      >
+                        <div className={cn(
+                          "mt-0.5",
+                          option.color === 'green' && "text-green-400",
+                          option.color === 'blue' && "text-blue-400",
+                          option.color === 'orange' && "text-orange-400"
+                        )}>
+                          {option.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium flex items-center gap-2">
+                            {option.label}
+                            {visibility === option.value && (
+                              <span className="text-xs text-primary">(Gwählt)</span>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {option.description}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </>
               )}
-            </Button>
+
+              {/* Description */}
+              {!isOpen && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  {currentOption.description}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex gap-4 pt-6">
             <Button
-              onClick={() => onSave(isPublic)}
+              onClick={() => onSave(visibility)}
               disabled={loading}
               className="flex-1 h-14 text-lg bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 rounded-xl font-semibold"
               size="lg"

@@ -206,6 +206,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
               recipeTitle={recipe.title}
               recipeOwnerId={recipe.created_by}
               isPublic={recipe.is_public}
+              visibility={recipe.visibility}
             />
           </div>
         </div>

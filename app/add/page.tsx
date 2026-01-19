@@ -73,7 +73,7 @@ export default function AddRecipePage() {
     }
   };
 
-  const handleSave = async (isPublic: boolean) => {
+  const handleSave = async (visibility: 'public' | 'private' | 'friends_only') => {
     if (!extractedRecipe) return;
 
     setLoading(true);
@@ -87,7 +87,8 @@ export default function AddRecipePage() {
         },
         body: JSON.stringify({
           ...extractedRecipe,
-          is_public: isPublic,
+          is_public: visibility === 'public',
+          visibility: visibility,
         }),
       });
 

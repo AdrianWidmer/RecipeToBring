@@ -12,10 +12,13 @@ import { useAuth } from "@/lib/auth/context";
 import { supabase } from "@/lib/supabase/client";
 import { SearchFilter } from "@/components/explore/SearchFilter";
 
+type VisibilityType = 'public' | 'private' | 'friends_only';
+
 export default function ExplorePage() {
   const { user } = useAuth();
   const [publicRecipes, setPublicRecipes] = useState<Recipe[]>([]);
   const [privateRecipes, setPrivateRecipes] = useState<Recipe[]>([]);
+  const [friendsRecipes, setFriendsRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -27,22 +30,31 @@ export default function ExplorePage() {
       const { data: publicData } = await supabase
         .from("recipes")
         .select("*")
-        .eq("is_public", true)
+        .eq("visibility", "public")
         .order("created_at", { ascending: false })
         .limit(50);
 
       setPublicRecipes(publicData || []);
 
-      // If user is logged in, also fetch their private recipes
+      // If user is logged in, also fetch their private and friends-only recipes
       if (user) {
         const { data: privateData } = await supabase
           .from("recipes")
           .select("*")
           .eq("created_by", user.id)
-          .eq("is_public", false)
+          .eq("visibility", "private")
           .order("created_at", { ascending: false });
 
         setPrivateRecipes(privateData || []);
+
+        const { data: friendsData } = await supabase
+          .from("recipes")
+          .select("*")
+          .eq("created_by", user.id)
+          .eq("visibility", "friends_only")
+          .order("created_at", { ascending: false });
+
+        setFriendsRecipes(friendsData || []);
       }
 
       setLoading(false);
@@ -79,45 +91,54 @@ export default function ExplorePage() {
 
   const filteredPublicRecipes = filterRecipes(publicRecipes);
   const filteredPrivateRecipes = filterRecipes(privateRecipes);
-  const totalResults = filteredPublicRecipes.length + filteredPrivateRecipes.length;
+  const filteredFriendsRecipes = filterRecipes(friendsRecipes);
+  const totalResults = filteredPublicRecipes.length + filteredPrivateRecipes.length + filteredFriendsRecipes.length;
 
-  const RecipeCard = ({ recipe, isPrivate }: { recipe: Recipe; isPrivate?: boolean }) => (
-    <Link 
-      key={recipe.id} 
-      href={`/recipe/${recipe.id}`}
-      className="group"
-    >
-      <div className="relative h-full bg-card/50 backdrop-blur-xl border border-border rounded-3xl overflow-hidden hover:bg-card transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20">
-        {/* Recipe Image */}
-        <div className="relative h-56 overflow-hidden">
-          {recipe.image_url ? (
-            <Image
-              src={recipe.image_url}
-              alt={recipe.title}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/50 to-blue-500/50 flex items-center justify-center">
-              <span className="text-6xl">👨‍🍳</span>
+  const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
+    // Determine visibility from the visibility field, with fallback to is_public
+    const visibility: VisibilityType = recipe.visibility || (recipe.is_public ? 'public' : 'private');
+    
+    return (
+      <Link 
+        key={recipe.id} 
+        href={`/recipe/${recipe.id}`}
+        className="group"
+      >
+        <div className="relative h-full bg-card/50 backdrop-blur-xl border border-border rounded-3xl overflow-hidden hover:bg-card transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20">
+          {/* Recipe Image */}
+          <div className="relative h-56 overflow-hidden">
+            {recipe.image_url ? (
+              <Image
+                src={recipe.image_url}
+                alt={recipe.title}
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/50 to-blue-500/50 flex items-center justify-center">
+                <span className="text-6xl">👨‍🍳</span>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+            
+            {/* Visibility Badge */}
+            <div className="absolute top-4 right-4">
+              <Badge className={`${
+                visibility === 'public'
+                  ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                  : visibility === 'friends_only'
+                  ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                  : 'bg-orange-500/20 text-orange-300 border-orange-500/30'
+              } backdrop-blur-sm`}>
+                {visibility === 'public' ? (
+                  <><Globe className="w-3 h-3 mr-1" /> Öffentlich</>
+                ) : visibility === 'friends_only' ? (
+                  <><Users className="w-3 h-3 mr-1" /> Fründe</>
+                ) : (
+                  <><Lock className="w-3 h-3 mr-1" /> Privat</>
+                )}
+              </Badge>
             </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-          
-          {/* Privacy Badge */}
-          <div className="absolute top-4 right-4">
-            <Badge className={`${
-              isPrivate 
-                ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
-                : 'bg-green-500/20 text-green-300 border-green-500/30'
-            } backdrop-blur-sm`}>
-              {isPrivate ? (
-                <><Lock className="w-3 h-3 mr-1" /> Private</>
-              ) : (
-                <><Globe className="w-3 h-3 mr-1" /> Public</>
-              )}
-            </Badge>
-          </div>
           
           {/* Tags Overlay */}
           {recipe.tags && recipe.tags.length > 0 && (
@@ -186,6 +207,7 @@ export default function ExplorePage() {
       </div>
     </Link>
   );
+};
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -233,17 +255,37 @@ export default function ExplorePage() {
             {user && filteredPrivateRecipes.length > 0 && (
               <div>
                 <div className="mb-8 flex items-center gap-3">
-                  <Lock className="w-6 h-6 text-purple-400" />
+                  <Lock className="w-6 h-6 text-orange-400" />
                   <h2 className="text-3xl font-bold text-foreground">
                     Mini privaten Rezept
                   </h2>
-                  <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                  <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
                     {filteredPrivateRecipes.length}
                   </Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredPrivateRecipes.map((recipe) => (
-                    <RecipeCard key={recipe.id} recipe={recipe} isPrivate />
+                    <RecipeCard key={recipe.id} recipe={recipe} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Friends-Only Recipes Section - Only for logged in users */}
+            {user && filteredFriendsRecipes.length > 0 && (
+              <div>
+                <div className="mb-8 flex items-center gap-3">
+                  <Users className="w-6 h-6 text-blue-400" />
+                  <h2 className="text-3xl font-bold text-foreground">
+                    Fründe & Familie
+                  </h2>
+                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                    {filteredFriendsRecipes.length}
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredFriendsRecipes.map((recipe) => (
+                    <RecipeCard key={recipe.id} recipe={recipe} />
                   ))}
                 </div>
               </div>
@@ -270,7 +312,7 @@ export default function ExplorePage() {
             )}
 
             {/* Empty State */}
-            {!loading && filteredPublicRecipes.length === 0 && filteredPrivateRecipes.length === 0 && (
+            {!loading && filteredPublicRecipes.length === 0 && filteredPrivateRecipes.length === 0 && filteredFriendsRecipes.length === 0 && (
               <div className="text-center py-20">
                 {searchQuery ? (
                   <>
