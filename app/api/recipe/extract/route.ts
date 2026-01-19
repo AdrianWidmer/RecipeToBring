@@ -76,17 +76,18 @@ export async function POST(request: NextRequest) {
         );
       }
       
-      // Other specific error types
-      if (error.message.includes('Failed to fetch YouTube')) {
+      // TikTok specific error
+      if (error.message.includes('Failed to fetch TikTok') || error.message.includes('TikTok may be blocking')) {
         return NextResponse.json(
-          { error: 'Das YouTube-Video konnt nöd glade wärde. Probier es anders Video oder prüef d URL.' },
+          { error: 'TikTok-Videos chönd nöd direkt usglese wärde. TikTok blockiert automatischi Zuegriff. Bitte bruuch de Link us de Bio oder de Website wo im Video erwähnt wird.' },
           { status: 400 }
         );
       }
       
-      if (error.message.includes('Failed to fetch TikTok')) {
+      // Other specific error types
+      if (error.message.includes('Failed to fetch YouTube')) {
         return NextResponse.json(
-          { error: 'Das TikTok-Video konnt nöd glade wärde. Probier es anders Video oder prüef d URL.' },
+          { error: 'Das YouTube-Video konnt nöd glade wärde. Probier es anders Video oder prüef d URL.' },
           { status: 400 }
         );
       }

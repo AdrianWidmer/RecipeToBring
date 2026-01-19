@@ -66,8 +66,15 @@ export async function parseRecipeFromUrl(url: string): Promise<ParsedRecipe> {
       });
       
       // Validate sufficient content
-      if (videoInfo.description.length < 80) {
-        throw new Error(`INSUFFICIENT_CONTENT: TikTok caption is too short (${videoInfo.description.length} characters). TikTok recipes often have the full recipe on a linked website. Please use the website link from the video bio instead.`);
+      if (videoInfo.description.length < 50) {
+        throw new Error(`INSUFFICIENT_CONTENT: TikTok captions are usually very short and don't contain full recipes. The caption only has ${videoInfo.description.length} characters. 
+
+Most TikTok creators put the full recipe in:
+1. Their bio link
+2. A linked website
+3. The comments
+
+Please find and use the full recipe link instead of the TikTok video URL.`);
       }
       
       // Check for common "no recipe" phrases

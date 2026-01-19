@@ -3,6 +3,7 @@
   "short_name": "RecipeToBring",
   "description": "Speicher Rezept und füeg Zuetate zu dinere Bring! Iikaufslischte hinzue",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",

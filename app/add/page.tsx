@@ -198,9 +198,19 @@ export default function AddRecipePage() {
                       className="flex items-center gap-2 bg-card/50 rounded-lg px-4 py-3 border border-border"
                     >
                       <span className="text-2xl">{source.icon}</span>
-                      <span className="text-sm text-muted-foreground">{source.name}</span>
+                      <span className="text-sm font-medium">{source.name}</span>
                     </div>
                   ))}
+                </div>
+                
+                {/* Tips Section */}
+                <div className="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+                  <p className="text-sm font-medium text-blue-400 mb-2">💡 Tipps für besti Resultät:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1.5 ml-1">
+                    <li><span className="text-blue-400">•</span> <strong className="text-foreground">Websitene:</strong> Funktioniert am beste (automatischi Erchennig)</li>
+                    <li><span className="text-blue-400">•</span> <strong className="text-foreground">YouTube:</strong> Bruucht es vollständigs Rezäpt in de Beschriibig</li>
+                    <li><span className="text-blue-400">•</span> <strong className="text-foreground">TikTok:</strong> Meischtens sind Rezäpt im Bio-Link oder verlinkter Websiite - bruuch die Link diräkt!</li>
+                  </ul>
                 </div>
               </div>
 
